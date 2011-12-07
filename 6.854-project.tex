@@ -1,18 +1,61 @@
-\title{A survey of recent work on Designing Competitive Online Algorithms via the Primal--Dual Approach}
-\author{Fredrik Kjolstad and Ludwig Schmidt and Christos Tzamos}
+\title{A Survey of Recent Work on Designing Competitive Online Algorithms via the Primal--Dual Approach}
+\author{Fredrik Kjolstad \and Ludwig Schmidt \and Christos Tzamos}
 \date{}
 
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{xspace}
+\usepackage{subfigure}
+\usepackage{graphicx,color}
 
 %\usepackage{fullpage}
+
+% Todos
+\newcommand{\fred}[1]{%
+	\textcolor{red}{[#1]}
+}
+\newcommand{\christos}[1]{%
+	\textcolor{red}{[#1]}
+}
+\newcommand{\ludwig}[1]{%
+	\textcolor{red}{[#1]}
+}
+
+
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-
+Online algorithms have become increasingly popular, partly because they capture uncertainty in a way that make them useful for many real world problems. The primal-dual method is a method that has been gaining popularity, especially as a technique to arrive at approximations for NP-hard problems.  More recently it has been gaining popularity as a general framework to solve many online algorithms. In 2009, Buchbinder and Joseph published a survey of applications of the primal--dual method. Since then new online problems have been tackled or approached using this technique, such as the online node-weighted steiner tree problem, the randomized k-server, and online job-migration. We present a survey of recent applications of the primal-dual method to online problems.
 \end{abstract}
 
+\section{Introduction}
+
+\section{Necessary Background}
+
+In this section we will present the necessary background knowledge that is required to follow the discussion in later sections. We assume the reader is already familiar with the online algorithm model, competitive analysis, approximation algorithms, (integer) linear programming, randomized rounding and the concepts of weak and strong duality and will not review these concepts here. For a brief discussion of these concepts we refer the reader to section~2 of Buchbinder and Naor's survey~\cite{buchbinder09:survey}.
+
+\subsection{Dual Fitting}
+
+\subsection{The Primal--Dual Approach}
+
+\section{Ski Rental}
+
+\section{Online Node-weighted Steiner Tree}
+~\cite{naor11:node-weighted-steiner-tree}
+
+\section{Towards the randomized k-server conjecture: a primal-dual approach}
+~\cite{bansal10:k-server}
+
+\section{Online Job-Migration}
+~\cite{buchbinder11:job-migration} ~\cite{buchbinder11:job-migration-techreport}
+
+\section{Conclusions}
 
 \bibliographystyle{abbrv}
 \bibliography{6.854-project}
