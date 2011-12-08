@@ -1,0 +1,36 @@
+\subsection{Preliminaries}
+In addition to the standard theorems and definitions about linear programs and duality we introduce \emph{approximate} complementary slackness.
+First, we review the concept of (ordinary) complementary slackness.
+Consider the following linear programs:
+
+\vspace{-.5cm}
+\begin{align*}
+& \textnormal{Primal: } \textnormal{minimize} \sum_{i=1}^n c_i x_i \\
+ &\qquad \textnormal{subject to } \sum_{i=1}^n a_{ij} x_i  \geq b_j \, , \;\; x_i \geq 0 \\
+& \textnormal{Dual: } \textnormal{maximize} \sum_{j=1}^m b_j y_j \\
+ &\qquad \textnormal{subject to } \sum_{j=1}^m a_{ij} y_j \leq c_i \, , \;\; y_j \geq 0
+\end{align*}
+\vspace{-.5cm}
+
+A feasible solution $x$ to the primal problem satisifies the complementary slackness condition if and only if for each $i$ we have either $x_i = 0$ or $\sum_{j} a_{ij}y_j = c_i$.
+So either the variable $x_i$ is equal to 0 or the corresponding constraint in the dual is tight.
+A feasible solution $x$ is optimal if and only if it satisifies the complementary slackness condition.
+
+Approximate slackness relaxes the conditions above.
+As a result, we only get an approximation ratio between the primal and dual solutions satisfying the approximate complementary slackness condition.
+In the context of online algorithms, this ratio corresponds to the competitive ratio.
+
+Now we precisely state the approximate complementary slackness condition.
+Let $x$ and $y$ be feasible solutions to the primal and dual linear programs.
+First we define the primal and dual complementary slackness conditions.
+
+$x$ satisfies the \emph{primal} complementary slackness condition if for $\alpha > 1$ we have $x_i > 0$ or $c_i / \alpha \leq \sum_j a_{ij} y_j \leq c_i$ for any $i$.
+Similarly, $y$ satisifies the \emph{dual} complementary slackness condition if for $\beta > 1$ we have $y_i > 0$ or $b_j \leq \sum_i a_{ij} x_i \leq b_j \beta$.
+
+If $x$ and $y$ satisify the primal and dual complementary slackness conditions respectively then 
+\[
+\sum_{i=1}^n c_i x_i  \leq \alpha \beta  \sum_{j=1}^m b_j y_j
+\]
+
+Note that for $\alpha = \beta = 1$ this gives the orindary complementary slackness theorem.
+The proof follows directly from applying the primal and dual complementary slackness properties to $\sum_i c_i x_i$.

@@ -20,3 +20,6 @@ new:
 	make clean
 	make 6.854-project.pdf
 
+newshow:
+	make new
+	make show
