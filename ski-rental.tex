@@ -1,14 +1,86 @@
 \subsection{Ski Rental}
 
-In this section we will informally present the primal--dual approach by applying it to the well-known ski 
+In this section we informally present the primal-dual approach by applying it to the well-known ski rental problem.
+
+In the ski rental problem a skier tries to decide whether to rent or buy skis.
+He can buy immediately, rent for some number of days and then buy, or always rent. 
+Renting cost \$1, while buying skis cost \$B.
+The goal of the skier is to spend the least amount of money.
+The ski rental problem is interesting because the skier does not know beforehand how many days he will ski in his life --- after all he may break his leg tomorrow.
+We assume an adverserial model where fate will ensure the worst possible outcome no matter what the skier decides.
+
+\subsubsection{The Online Ski Rental Algorithm}
+The optimal deterministic strategy against a malicious adversary that minimizes the competitive ratio has been known for a long time, and requires the skier to rent for B days before buying.
+If the last day of skiing is before day B then this strategy is optimal.
+On the other hand, if the last day of skiing is after day B, then the strategy is at most two times as expensive as the optimal strategy, OPT, which is to buy skis on the first day of skiing.
+This strategy achieves a competitive ratio of 2 (it is 2-competitive), and is optimal for deterministic strategies.
+
+However, a better competitive ($\frac{e}{e-1}$) ratio can be achieved using randomization.
+We will provide an optimal randomized algorithm using the primal-dual approach, but first we will discuss a deterministic primal-dual algorithm that achieves 2-competitiveness.
 
 \subsubsection{LP Formulation}
+We begin by formulating an integer linear program that captures the solution for the offline ski rental problem.
+We use an indicator variable $x \in \{0,1\}$ that represents whether we buy the skis or not and a variable $d_i \in \{0,1\}$ for every day that indicates whether we rent skis or not at day $i$. 
+The objective we want to minimize is then:
+\[ B\cdot x + \sum^n_{i=1} d_i \]
+subject to the constraints that for each day $i$:
+\[ x + d_i \ge 1 \]
+
+The optimal solution in an offline version is either $x=1$ and $d_i = 0$ for each day or $x=0$ and $d_i = 1$ for each day whatever is best.
+That is, the optimal solution is to buy at once or never buy at all.
+This of course requires prior knowledge of $n$ which we don't have in an online setting.
+
+In an online setting we know the objective beforehand, but we begin without any constraints.
+Every day, a new constraint appears and we have to reoptimize our solution.
+However, since we can't change the past we cannot undo any previous decisions.
+This means that we can never decrease any variables set in the past.
+
 
 
 \subsubsection{Algorithm}
+
+We will now describe how we can incrementally solve the linear program using the primal-dual approach.
+We will later argue that this will not cause the solution to deviate too much from OPT.
+In order to apply the primal-dual approach, we first have to relax the integer linear program to a linear program. Note that the optimal solution in the relaxed version is exactly the same as before.
+
+The primal-dual method approximates the solution to the linear program incrementally by updating the primal and dual simultaneously.
+The primal and dual is given below.
+
+Primal
+\[
+	\begin{array}{lrcl}
+	\textrm{Minimize}   & B\cdot x + \sum^n_{i=1} d_i   \\
+	\textrm{subject to:} & \\
+	\textrm{for each day $i$} & x + d_i  \ge 1  \\
+			    & x     \geq 0, \forall i : d_i \ge 0
+	\end{array}
+\]
+
+Dual
+\[
+	\begin{array}{lrcl}
+	\textrm{Maximize}   & \sum^n_{i=1} y_i   \\
+	\textrm{subject to:} & \sum^n_{i=1} y_i \le B \\
+	\textrm{for each day $i$} & 0 \le y_i  \le 1
+	\end{array}
+\]
+
+For the online version, in the $i$-th day a new constraint ($x + d_i  \ge 1$) arrives in the primal problem and a new variable ($y_i$) arrives in the dual. 
+With the new constraint the primal problem may become infeasible (this happens if $x < 1$). 
+If it is still feasible we don't have to do anything since we already covered the new constraint. 
+Otherwise, we need to decide which variable, $x$ or $d_i$, to increase. 
+To make this decision we look at the dual. 
+Since the dual is a maximization problem, we would like to increase the new variable $y_i$ as much as possible.
+Thus we increase $y_i$ until we hit a constraint in the dual problem.
+This constraint corresponds to a variable in the primal problem, either $d_i$ or $x$.
+We set this variable equal to 1.
+
+Notice that the algorithm corresponds to exactly the same strategy we described previously, i.e. the skier rents skis for the first B days and then buys them.
+We note that although the use of dual variables above may not be very intuitive
 
 \subsubsection{Analysis}
 
 \subsubsection{Fractional Algorithm Analysis}
 
-\subsubsection*{Randomized Ski Rental}
+\subsubsection{Randomized Ski Rental}
+
