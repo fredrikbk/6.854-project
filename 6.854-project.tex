@@ -31,7 +31,12 @@
 \maketitle
 
 \begin{abstract}
-Online algorithms have become increasingly popular, partly because they capture uncertainty in a way that make them useful for many real world problems. The primal-dual method is a method that has been gaining popularity, especially as a technique to arrive at approximations for NP-hard problems.  More recently it has been gaining popularity as a general framework to solve many online algorithms. In 2009, Buchbinder and Joseph published a survey of applications of the primal--dual method. Since then new online problems have been tackled or approached using this technique, such as the online node-weighted steiner tree problem, the randomized k-server, and online job-migration. We present a survey of recent applications of the primal-dual method to online problems.
+Online algorithms have become increasingly popular, partly because they capture uncertainty in a realistic way that makes them a useful model for practial applications.
+The primal-dual method is an approach that has been gaining popularity, especially as a technique to arrive at approximations for NP-hard problems.
+More recently it has also been applied as a general framework to solve many online algorithms.
+In 2009, Buchbinder and Joseph published a survey of applications of the primal--dual method to online algorithms.
+Since then new online problems have been tackled using this technique, such as the online node-weighted Steiner tree problem, the k-server problem, and online job-migration.
+We present a survey of recent applications of the primal-dual method to online problems.
 \end{abstract}
 
 \section{Introduction}
@@ -39,11 +44,15 @@ Online algorithms have become increasingly popular, partly because they capture 
 
 
 
-\section{The Primal--Dual Approach}
+\section{The Primal-Dual Approach}
 
-In this section we will present the Primal--Dual approach. We will first discuss some preliminary knowledge that is required. We will then examine the approach using the well known Ski Rental problem as an example. Finally, we will discuss the general primal--dual framework so that it can be applied to other problems.
+In this section we present the primal-dual approach.
+First, we explain the required background in linear programming and duality.
+We then introduce the technique using the well known ski rental problem as an example.
+Finally, we discuss the general primal--dual framework so that it can be applied to other problems.
 
-We assume the reader is already familiar with the online algorithm model, competitive analysis, approximation algorithms, (integer) linear programming, randomized rounding and the concepts of weak and strong duality and will not review these concepts here. For a brief discussion of these concepts we refer the reader to section~2 of Buchbinder and Naor's survey~\cite{buchbinder09:survey}.
+We assume the reader is already familiar with the online algorithm model, competitive analysis, approximation algorithms, (integer) linear programming, randomized rounding and the concepts of weak and strong duality and will not review these concepts here.
+For a brief discussion of these concepts we refer the reader to section~2 of Buchbinder and Naor's survey~\cite{buchbinder09:survey}.
 
 \input{preliminaries}
 \input{ski-rental}
