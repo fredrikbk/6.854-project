@@ -10,7 +10,7 @@ The ski rental problem is interesting because the skier does not know beforehand
 We assume an adverserial model where fate will ensure the worst possible outcome no matter what the skier decides.
 
 \subsubsection{The Online Ski Rental Algorithm}
-The optimal deterministic strategy against a malicious adversary that minimizes the competitive ratio has been known for a long time, and requires the skier to rent for $B$ days before buying.
+Against a malicious adversary, the optimal deterministic strategy that minimizes the competitive ratio has been known for a long time, and requires the skier to rent for $B$ days before buying.
 If the last day of skiing is before day B then this strategy is optimal.
 On the other hand, if the last day of skiing is after day B, then the strategy is at most two times as expensive as the optimal strategy, OPT, which is to buy skis on the first day of skiing.
 This strategy achieves a competitive ratio of 2 (it is 2-competitive), and is optimal for deterministic strategies.
