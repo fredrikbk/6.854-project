@@ -44,20 +44,17 @@ In order to apply the primal-dual approach, we first have to relax the integer l
 The primal-dual method approximates the solution to the linear program incrementally by updating the primal and dual simultaneously.
 The primal and dual is given below.
 
-Primal
 \[
-	\begin{array}{lrcl}
-	\textrm{Minimize}   & B\cdot x + \sum^n_{i=1} d_i   \\
+	\begin{array}{lr}
+	\textrm{Primal: minimize}   & B\cdot x + \sum^n_{i=1} d_i   \\
 	\textrm{subject to:} & \\
 	\textrm{for each day $i$} & x + d_i  \ge 1  \\
 			    & x     \geq 0, \forall i : d_i \ge 0
 	\end{array}
 \]
-
-Dual
 \[
-	\begin{array}{lrcl}
-	\textrm{Maximize}   & \sum^n_{i=1} y_i   \\
+	\begin{array}{lr}
+	\textrm{Dual: maximize}   & \sum^n_{i=1} y_i   \\
 	\textrm{subject to:} & \sum^n_{i=1} y_i \le B \\
 	\textrm{for each day $i$} & 0 \le y_i  \le 1
 	\end{array}
@@ -77,7 +74,39 @@ Notice that the algorithm corresponds to exactly the same strategy we described 
 
 \subsubsection{Analysis}
 
+The analysis of the ski rental problem is crucial for understanding the concepts of the primal-dual method. 
+The key idea is that every time the algorithm makes a change in the primal LP, a change in the dual LP happens as well so that the ratio between their corresponding objective values remains bounded by some function. 
+This function gives the competitive ratio of the algorithm.
+
+For the previous algorithm, we note that the update rule maintains always a feasible solution for both the primal and the dual. 
+In order to bound the ratio between their objectives we use approximate complementary slackness. 
+In our case we have, by the update rule, that:
+\begin{itemize}
+\item Whenever $x > 0$, $\sum^n_{i=1} y_i = B$ (tight)
+\item Whenever $d_i > 0$, $y_i = 1$ (tight)
+\item Whenever $y_i > 0$, $1 \le x+d_i \le 2$ (approximately tight)
+\end{itemize}
+
+So by approximate complementary slackness with $\alpha = 1$ and $\beta = 2$ we get that the primal objective is at most 2 times the dual objective. Therefore, it is at most 2 times the optimal offline solution and thus it is 2-competitive.
+
 \subsubsection{Fractional Algorithm Analysis}
+We now move on to get a randomized algorithm for the ski rental problem. 
+To do this we will first try to find a fractional online solution and then we will use the fractional values of the primal variables to get the probabilities of buying and renting the skiis for each day.
+In the deterministic case we always maintained a feasible primal solution and whenever a new constraint appeared on day $i$ we either set $d_i$ or $x$ to 1. For the fractional case we don't have to set $x$ directly to 1 when we reach $B$ days but we can gradually increase $x$ every day. So for every new day$i$ if $x<1$ we use the update rule:
+\begin{itemize}
+\item $x \leftarrow x(1+1/B) + 1/(c\cdot B)$
+\item $d_i \leftarrow 1 - x$
+\item $y_i \leftarrow 1$
+\end{itemize}
+where $c$ is a constant to be defined later.
+
+We move on to the analysis part of the algorithm. Let $x^{(i)}$ be the value of $x$ on the $i$-th day. We first note that under the update rule chosen, after $k$ days $x^{(k)} =  \sum_{i=0}^{k-1} (1+1/B)^i / (c\cdot B) = [(1+1/B)^k-1]/c$. It is obvious that the primal solution is always feasible since at any time $i$, $x^{(i)}+d_i=1$ and no previous constraints are violated by the increase in $x$. We choose $c$ so that the dual is feasible as well. We want $y_i$ to be 1 for at most $B$ days otherwise the dual constraint  $\sum^n_{i=1} y_i \le B$ will be violated. So we want that after $B$ days $x = 1$ which means that $c = (1+1/B)^k-1$.
+
+The second thing we want is that the ratio between the primal objective and the dual objective is always bounded by a function. 
+We show that it is bounded by $(1+1/c)$. We show this by induction. Initially the objective functions of the primal and the dual are both 0 so the statement holds. Assuming that it holds for $k$ days we show that it holds for $k+1$ days. If $k\ge B$ it clearly holds since the two objectives are left unchanged. Otherwise, we see that x increases by $x^{(k)} / B + 1/(c \cdot B)$ while $z_{k+1}$ becomes $1 - x^{(k+1)}$. So the primal objective increases by $x^{(k)} + 1/c + 1 - x^{(k+1)} \le 1 + 1/c$ since $x^{(k)} \le x^{(k+1)}$. On the other hand the dual objective increases by 1 unit so the statement holds.
+
+Therefore we get an online fractional algorithm for the ski rental problem with competitive ratio $1+1/c \approx e/(e-1)$ for large values of $B$.
+Following we see how to make this randomized based on the fractional values we get.
 
 \subsubsection{Randomized Ski Rental}
-
+Our randomized strategy for deciding is as follows: In the beginning we pick a random value $v$ in the interval $[0,1]$ and we buy skis on the first day that $x \ge v$. The probability of buying skis in the first $n$ days is exactly $x^{(n)}$, i.e. the assigned fractional value by the online fractional solution. The probability of renting skis in the $i$-th day is exactly $1-x^{(i)}$. The expected cost of our randomized algorithm if we go skiing for $n$ days is therefore $B \cdot  x^{(n)} + \sum_{i=1}^n(1-x^{(i)})$ which is exactly the same as the fractional algorithm. Thus the randomized algorithm is also $e/(e-1)$-competitve.
