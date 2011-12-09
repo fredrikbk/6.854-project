@@ -1,6 +1,6 @@
-As we argued earlier, one of the reasons why online algorithms are so interesting is that they model the uncertaincy we often face in the real world, where we do not have any certain knowledge about the future.
-However, real-world problems are often more involved than the clasical problems typically studied in the online algorithms literature, with more variable factors.
-This often makes them hard to analyse and often prevents us from devising algorithms with provable worst case performance.
+As we argued earlier, one of the reasons why online algorithms are so interesting is that they model the uncertainty we often face in the real world, where we do not have any certain knowledge about the future.
+However, real-world problems are often more involved than the classical problems typically studied in the online algorithms literature, with more variable factors.
+This often makes them hard to analyze and often prevents us from devising algorithms with provable worst case performance.
 
 Linear programming is a powerful technique that is heavily studied in operations research due to its applicability to problems in the real world.
 Since the primal-dual technique starts with an offline linear program we may expect it to also be applicable to many real-world problems.
@@ -8,7 +8,7 @@ To illustrate the flexibility of the primal-dual approach we discuss in this sec
 The goal of the migration is to move jobs to data centers at locations with temporarily cheaper power.
 This algorithm was developed by Buchbinder, Jain and Menache in their 2011 paper \emph{``Online Job-Migration for Reducing the Electricity Bill in the Cloud''} and the companion technical report with the same name~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
 The primal-dual algorithm developed by the authors using the primal-dual method turns out to be too computationally expensive to be used in practice.
-However, it serves as the inspiration for a non-intuiative algorithm that they empirically show to outperform two reasonable greedy heuristics and to be within $4\%-6\%$ of the optimal, on real-world data.
+However, it serves as the inspiration for a non-intuitive algorithm that they empirically show to outperform two reasonable greedy heuristics and to be within $4\%-6\%$ of the optimal, on real-world data.
 
 \subsection{Problem Formulation}
 
@@ -29,9 +29,49 @@ However, moving data is not free and a cost proportional to the amount of data u
 These competing constraints make the problem non-trivial, and greedy heuristics with provable performance are not feasible.
 
 % Describe the model and the variables
-
+Specifically, our problem consist of $n$ data centers, where each data center $i$ contains $H_i$ servers.
+The job-load in the system is given by the constant variable $B$ (in the technical report the authors also generalizes to variable workloads).
+At each discretized time step $t$ we must decide whether to move jobs between data centers, taking the bandwidth cost and energy costs into account.
+The migration cost for moving data out of data center $i$ is defined as $d_i$, and the variable $z_{i,j,t}$ is the number of jobs migrated from server $j$ in data center $i$ at time $t$.
+Finally, $c_{i,j,t}$ is the energy cost of operating server $j$ in data center $i$ at time $t$, and $y_{i,j,t}$ is the fraction of server $j$ of data center $i$ that is utilized at time $t$.
+Jobs are defined as using exactly one server, so the number of servers needed at data center $i$ at time $t$ is $\lceil \sum^{H_i}_{j=1}y_{i,j,t} \rceil$.
+Since the number of servers in each data center is expected to be large we can ignore the extra fraction introduced by the ceiling operator.
 
 % Define the LP
+The following (primal) linear program captures the online data center job-migration problem:
+\[
+\textrm{(P) : min}  \sum^n_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}d_{i} \cdot z_{i,j,t} + \sum^{n}_{i=1}\sum^{H_{i}}_{j=1}\sum^{T}_{t=1} c_{i,j,t} \cdot y_{i,j,t}
+\]
+\[
+	\begin{array}{rc}
+	\textrm{subject to :} & \\
+		\forall t \textrm{ :} & \sum^n_{i=1}\sum^{H_i}_{j=1}y_{i,j,t} \geq B \\
+		\forall i,j,t \textrm{ :}	    & z_{i,j,t} \geq y_{i,j,t-1} - y_{i,j,t} \\
+		\forall i,j,t \textrm{ :}	    & y_{i,j,t} \leq 1 \\
+		\forall i,j,t \textrm{ :}	    & y_{i,j,t} \geq 0 \\
+		\forall i,j,t \textrm{ :}	    & z_{i,j,y} \geq 0
+	\end{array}
+\]
+
+The objective function minimizes the sum of the bandwidth cost (first term) and the energy cost (second term).
+The first constraint ensures the allocation satisfies the workload $B$.
+The second constraint enforces that the amount of work leaving a server is at least the same as the work that server lost (it may be more as a server may also receive work).
+The third prevents servers from being over-used as each server can only execute one task, and the fourth and fifth constraints just prevents server usage or bandwidth from being negative.
+
+The corresponding dual linear program is:
+
+\[
+\textrm{(D) : max}   \sum^{T}_{t=1}B \cdot a_t - \sum^{n}_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}s_{i,j,t}
+\]
+\[
+	\begin{array}{rc}
+	\textrm{s.t. :} & \\
+		\forall i,j,t \textrm{ :}	    & -c_{i,j,t} + a_t + b_{i,j,t} - b_{i,j,t+1} - s_{i,j,t} \leq 0 \\
+		\forall i,j,t \textrm{ :}	    & b_{i,j,t} \leq d_i \\
+		\forall i,j,t \textrm{ :}	    & b_{i,j,t} \geq 0 \\
+		\forall i,j,t \textrm{ :}	    & s_{i,j,t} \geq 0
+	\end{array}
+\]
 
 \subsection{Primal-Dual Online Algorithm}
 
