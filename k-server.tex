@@ -82,5 +82,13 @@ In contrast to the Allocation-C problem, we now incur a cost $c_i^t$ for each po
 The total cost incurred by the algorithm is divided into the movement cost and the hit cost.
 
 In order to reduce the Allocation-C problem with $n$ points to an instance of Caching with Costs, we introduce $k$ points in Caching with Costs for each original point in Allocation-C (so $l = nk$).
-This allows us to model assigning up to $k$ servers to a point in Allocation-C (note that in Caching with Costs, it is only relevant whether a point is being served, not by how many servers).
-Given a request in Allocation-C, we translate it into Caching with Costs accordingly.
+This allows us to model assigning up to $k$ servers to a point $i$ in Allocation-C by assigning servers to the $k$ points corresponding to $i$ in Caching with Costs (note that in Caching with Costs, it is only relevant whether a point is being served, not by how many servers).
+Given a request $h^t$ to point $i$ in Allocation-C, we translate it into Caching with Costs accordingly: $c^t_{i,j} = (h^t_{i,j-1} - h_{i,j}^t)$.
+This reduction shows that the hit and movement costs incurred in Caching with Costs are equal to those incurred in Allocation-C.
+Conversely, we can also show how to reduce Caching with Costs to Allocation-C.
+Hence a $c$-competitive algorithm for one problem implies a $c$-competitive algorithm for the other problem.
+
+Before stating the linear program for Caching with Costs, we need one further lemma.
+TODO: state request decomposition lemma
+TODO: state LP
+
