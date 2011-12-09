@@ -1,1 +1,46 @@
-~\cite{buchbinder11:job-migration} ~\cite{buchbinder11:job-migration-techreport}
+As we argued earlier, one of the reasons why online algorithms are so interesting is that they model the uncertaincy we often face in the real world, where we do not have any certain knowledge about the future.
+However, real-world problems are often more involved than the clasical problems typically studied in the online algorithms literature, with more variable factors.
+This often makes them hard to analyse and often prevents us from devising algorithms with provable worst case performance.
+
+Linear programming is a powerful technique that is heavily studied in operations research due to its applicability to problems in the real world.
+Since the primal-dual technique starts with an offline linear program we may expect it to also be applicable to many real-world problems.
+To illustrate the flexibility of the primal-dual approach we discuss in this section an algorithm based on the primal-dual method for job-migration between data centers.
+The goal of the migration is to move jobs to data centers at locations with temporarily cheaper power.
+This algorithm was developed by Buchbinder, Jain and Menache in their 2011 paper \emph{``Online Job-Migration for Reducing the Electricity Bill in the Cloud''} and the companion technical report with the same name~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
+The primal-dual algorithm developed by the authors using the primal-dual method turns out to be too computationally expensive to be used in practice.
+However, it serves as the inspiration for a non-intuiative algorithm that they empirically show to outperform two reasonable greedy heuristics and to be within $4\%-6\%$ of the optimal, on real-world data.
+
+\subsection{Problem Formulation}
+
+% Explain/Motivate problem
+Energy is quickly becoming the dominant cost factor for data center operation.
+It is expected that by 2014, the infrastructure and energy cost of data centers will be 75\% of the total cost.
+The EPA reported the energy cost of server and data center operation in 2007 to be \$4.5 billion, with demand expected to double by 2011.
+% Citation Needed
+Furthermore, CNN reports data centers to account for 2\% of all electricity consumed in the US.
+With such high stakes, it is no surprise that techniques to reduce energy costs in data centers are in high demand.
+
+One technique that has recently been proposed to reduce energy costs when operating multiple geographically distributed data centers is to move tasks to data centers with cheaper energy.
+% Citation Needed
+This approach is motivated by the observation that energy prices are localized and that computation will therefore be cheaper at some sites.
+Furthermore, energy prices are fluctuating and the cheapest data center at one point in time, may not be the cheapest later on.
+This motivates online algorithms that monitor electricity prices and at any time move tasks to data centers where the electricity is the cheapest.
+However, moving data is not free and a cost proportional to the amount of data used is typically incurred.
+These competing constraints make the problem non-trivial, and greedy heuristics with provable performance are not feasible.
+
+% Describe the model and the variables
+
+
+% Define the LP
+
+\subsection{Primal-Dual Online Algorithm}
+
+% Algorithm
+
+% Proof sketch (maybe)
+
+\subsection{Efficient Online Algorithm}
+
+% Efficient Algorithm
+
+% Experiments
