@@ -1,1 +1,52 @@
+In this section we explore several application of the general framework we discussed previously on several online network optimization problems. We begin by looking at a very general problem called the generalized connectivity problem. In this problem there is an underlying undirected graph $G = (V,E)$ where each edge has a non-negative cost $c_e$. Every time, a new request arrives in the form $(S_i,T_i)$ where $S_i$ and $T_i$ are two non-empty disjoint subsets of $V$ and the goal is to connect some node in $S_i$ to some node in $T_i$ via a path. For every request, we need to decide which edges to buy so that we can satisfy it. Note that edges that were previously purchased can be reused for handling future requests. The goal is to minimize the total cost of purchased edges.
+
+\subsection{Fractional Connectivity Problem}
+
+We are interested in solving the fractional version of the connectivity problem where we are allowed to buy fractions of the edges (capacity) and we only require that a unit of flow can be sent from nodes in $S_i$ to nodes in $T_i$. In the online setting once we bought some capacity in an edge we can never decrease it but we may increase it later on. To approach this we will apply the framework that was previously described. We first formulate the LP where for each edge we keep a variable $x_e$ indicating the capacity of the edge that we own. We note that a unit flow can be sent from $S_i$ to $T_i$ if and only if every $(S_i, T_i)$ cut with respect to $x_e$ has value at least 1. Therefore, the LP we get is: 
+\[
+	\begin{array}{lr}
+	\textrm{Primal: minimize}   & \sum_{e \in E} c_e x_e   \\
+	\textrm{subject to:} & \\
+	\textrm{for each day $i$, every $(S_i,T_i)$ cut $C$} & \sum_{e \in C} x_e  \ge 1  \\
+			    & x_e \geq 0
+	\end{array}
+\]
+
+To get an online solution for the LP we use the framework developed in the previous section.The difference is that now instead of one constraint we get an exponential number of constraints added per request. We deal with this however by finding the constraint that corresponds to the minimum $(S_i,T_i)$ cut every time and increase the primal and the dual functions as mentioned in the previous section. So in total the algorithm does the following for every request:
+
+\begin{algorithm}
+\caption{Request($S_i$,$T_i$)}
+\begin{algorithmic}[1]
+\WHILE{the max $S_i \rightarrow T_i$ flow is less than 1}
+  \STATE Find the minimum  $(S_i,T_i)$ cut $C$
+  \FORALL{edges $e \in C$}
+    \STATE $x_e \leftarrow x_e (1 + 1/c_e) + 1/(|C| \cdot c_e)$ 
+  \ENDFOR
+  \STATE $y_{i,C} \leftarrow y_{i,C} + 1$
+\ENDWHILE
+\STATE Make every edge have capacity $x_e$ 
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm above has competitive ratio $O( \log \textrm{MAX-CUT} )$ and runs in polynomial time.
+
+\subsection{Online Facility Location}
+We now move on to develop a randomized strategy for the integral version of the connectivity problem based on the fractional solution we got above.Since this is in general very hard to do we will restrict ourselves in a very interesting subproblem, the (non-metric) facility location.
+
+In this problem, there is a set $F$ of possible facilities that we can build along with a certain building cost $c_f$ for every $f \in F$. In this problem clients arrive one at a time and want to be connected to at least one of the built facilities. Every client $i$ has a certain cost $c_{i,f}$ for every facility $f$ that he may be connected to. So the decision we have to make whenever a client appears is whether to connect him to some previously built facility or to build a new facility and connect him to it. Again, since this is an online setting we cannot undo the fact that a facility has been built or that a client has been connected to the facility.
+
+We now show how to reduce this problem to the connectivity problem. For every facility $f \in F$, we create a tree where the root corresponds to $f$. We connect the root to a single node with an edge of cost $c_f$. And then we connect this node to the leafs where each leaf corresponds to every client. The edges connecting the client nodes to the intermediate node have cost equal to $c_{i,f}$. Note that each tree has infinite size since the number of clients may be arbitrarily large and that in the online setting we don't know the edge costs of a client before he appears. However we will never use a part of the tree that corresponds to some client that hasn't arrived yet.
+
+Every time a new client appears we need to connect a node that corresponds to him in some tree to the root of that tree by bying edges. If the edge connecting the root of the tree to the intermediate node has already been bought it means that the facility has been built and that we only need to pay for connecting the client to that facility (buy the edge to the intermediate node). Thus, in the context of the connectivity problem we can see that each client is associated with two sets $(S_i,T_i)$ where $S_i$ is the set of nodes corresponding to him in every tree and $T_i$ are the roots of all trees.
+
+Therefore we can use the fractional algorithm we developed previously to get a fractional solution to the problem. Since the cut every time is exactly equal to $m$ where $m$ is the number of trees/possible facility locations the competitive ratio is $O(\log m)$. We now see how we can use the fractional solution to obtain an online randomized algorithm for facility location.
+
+Throughout the course of the algorithm, we maintain $2 \lceil log(n'+1) \rceil$ values for every tree when $n'$ requests have occured so far. This values are drawn uniformly at random from $[0,1]$. Before any requests occur no tree has any such value. Whenever a request happens we sample more values so that every tree has exactly $2 \lceil log(n'+1) \rceil$. In order to decide which edges to buy we compute for every tree the minimum of its values and buy all edges with fractional capacity greater than this value. For a single value drawn randomly out of $[0,1]$ edge $e$ has probability $x_e$ of being selected. By the union bound for $2 \lceil log(n'+1) \rceil$ values the edge has probability less than $2 \lceil log(n'+1) \rceil x_e$ of being selected. So in total the expected cost is at most $2 \lceil log(n'+1) \rceil = O(\log n')$ times the cost of the fractional solution. This means that it is at most $O(\log n \log m)$ times the optimal offline algorithm.
+
+The resulting solution however may not be feasible since it may be the case that a client is not connected to any facility. We show that this happens with very low probability. For a single value drawn at random from every tree the probability that there is no path from the client node $i$ to the root for any tree is equal to $\prod_f (1-flow(i,f))$ where $flow(i,f)$ is the flow from the client node i to the root in the tree that corresponds to facility $f$. However, $\prod_f (1-flow(i,f)) \le e^{-\sum_f flow(i,f)} \le 1/e$, since $\sum_f flow(i,f) \ge 1$ in the fractional solution. So for $2 \lceil log(n'+1) \rceil$ values the probability that there is no path is at most $e^{-2 \lceil log(n'+1) \rceil} \le 1/n'^2$.
+
+Since this happens with very low probability we can connect client $i$ to some root via the cheapest path. This is a lower bound to the value of the optimal offline solution since OPT has to connect client $i$ to some facility. So overall the additional expected cost added when the randomization fails to connect a client to a facility is $\sum_{n'} OPT/n'^2 = O(1) OPT$ which is negligible.
+
+So the competitve ratio of the randomized alogithm is $O(\log n \log m)$ for a total of $n$ requests.
+
 ~\cite{naor11:node-weighted-steiner-tree}
