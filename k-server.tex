@@ -2,7 +2,7 @@ Recently, the primal-dual technique has been used to explore new approaches to t
 We first state the problem and describe the current state of the randomized $k$-server conjecture.
 Then we briefly give an overview of the steps involved in applying the primal-dual approach to the $k$-server problem.
 
-\subsection{The $k$-server problem}
+\subsection{The $k$-Server Problem}
 The problem statement is as follows:
 We have $k$ servers located at up to $k$ points in a metric space (essentially a set with a well-behaved distance function) and must serve requests appearing one after another.
 Each request is a point in the metric space and we serve it by moving one of the $k$ servers to the request.
@@ -18,4 +18,46 @@ While the best algorithm for the general case is $2k -1$ competitive, there are 
 For the randomized case, the conjectured competitive ratio is $O(\log k)$ and there has been recent work showing a $\tilde{O}(log^3 n \; log^2 k)$ approximation ratio~\cite{bansal11:randomized-k-server}.
 While the results in \cite{bansal11:randomized-k-server} do not use the primal-dual approach for online algorithms, some of the techniques are inspired by problems that were first introduced in the context of the primal dual approach.
 
-\subsection{Applying the primal-dual approach to $k$-server}
+\subsection{Applying the Primal-Dual Approach to the $k$-Server Problem}
+Due to the importance of the $k$-server conjecture, there is already a large body of work on tackling the problem.
+In order to put the primal-dual approach to the $k$-server problem in context, we review the high-level ideas here.
+
+One key difficulty of the $k$-server problem on general metric spaces is the weak structure of the distances between points.
+The most promising approach for overcoming this obstacle is work on embedding general metrics into hierarchically separated trees (HST).
+In an HST, the distance between a node $x$ and its parent $p(x)$ depends only on a constant $\alpha$ and the depth $i$: $d(x, p(x)) = \alpha^i$.
+Moreover, all leaf nodes in an HST are at the same level.
+When embedding a metric space into an HST, only the leaves of the HST correspond to points in the metric space.
+General metrics can be embedded into distributions over HSTs with only logarithmic distortion of the distances.
+This distortion would be still be sufficient to provide polylogarithmic competitive ratios for the randomized $k$-server problem.
+
+Cote et al.\ use HSTs introduce an approach to the $k$-server problem based on recursively solving a simpler problem at each node of the tree.
+Due to the structure of HSTs, we have a uniform metric space on the children of a given node (all children have the same distance to their common parent).
+This approach seems promising because of the relatively simple structure of uniform metrics.
+Moreover, there has been recent success using this technique to derive algorithms for a closely related problem (metrical task systems).
+In the case of $k$-server, the problem we want to solve at each node of the tree is the \emph{Allocation problem}.
+
+The Allocation problem is defined as follows:
+We have a uniform metric space with $n$ points and up to $k$ servers.
+For each request $t$, the number of available servers is limited to $k(t) \leq k$.
+Each request is described by a cost vector $h^{(t)} = (h^{(t)}(0), \ldots, h^{(t)}(k))$ where $h^{(t)}(j)$ is the cost of serving the request $t$ with $j$ servers.
+The cost vectors satisfy a natural property: the costs are monotonic, i.e.\ $h^{(t)}(j) \geq h^{(t)}(j + 1)$ (using more servers for a requests cannot increase the cost of serving it).
+When a request comes in, we can move an arbitrary number of available servers to the request before serving it.
+The total cost incurred by the algorithm is divided into two parts:
+\begin{itemize}
+\item \emph{Move-Cost}, the cost of moving servers.
+\item \emph{Hit-Cost}, the cost of serving the requests.
+\end{itemize}
+
+Cote et al.\ showed that an algorithm for the Allocation problem satisfying the following conditions leads to a polylogarithmic algorithm for the randomized $k$-server problem.
+Let OPT be the cost of the optimal algorithm for the Allocation problem.
+Then the conditions are as follows:
+\begin{itemize}
+\item The total Hit-Cost is at most $(1 + \epsilon)$ OPT.
+\item The total Move-Cost is at most polylog $\cdot$ OPT.
+\end{itemize}
+However, Cote et al.\ only showed how to solve the Allocation Problem with these bounds for a metric space consisting of two points.
+The authors of~\cite{bansal10:k-server} used the primal-dual approach to find an algorithm for a restricted version of the Allocation Problem on uniform metrics.
+
+\subsection{The Allocation-C Problem}
+foo foo foo bar
+
