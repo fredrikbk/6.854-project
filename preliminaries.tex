@@ -3,18 +3,31 @@ In addition to the standard theorems and definitions about linear programs and d
 First, we review the concept of ordinary complementary slackness.
 Consider the following linear programs:
 
-\vspace{-.5cm}
-\begin{align*}
-& \textnormal{Primal: } \textnormal{minimize} \sum_{i=1}^n c_i x_i \\
- &\qquad \textnormal{subject to } \sum_{i=1}^n a_{ij} x_i  \geq b_j \, , \;\; x_i \geq 0 \\
-& \textnormal{Dual: } \textnormal{maximize} \sum_{j=1}^m b_j y_j \\
- &\qquad \textnormal{subject to } \sum_{j=1}^m a_{ij} y_j \leq c_i \, , \;\; y_j \geq 0
-\end{align*}
-\vspace{-.5cm}
+\[
+\begin{array}{lr}
+  \textrm{Primal: minimize}   & \sum^n_{i=1} c_i x_i  \\
+  \textrm{subject to:} & \\
+  \quad \textrm{for each $j$} & \sum_{i=1}^n a_{ij} x_i \geq b_j \\
+  \quad \textrm{for each $i$} & x_i \geq 0 \\
+\end{array}
+\]
 
-A feasible solution $x = (x_i, \ldots, x_n)$ to the primal problem satisifies the complementary slackness condition if and only if for each $i$ we have either $x_i = 0$ or $\sum_{j} a_{ij}y_j = c_i$.
-So either the variable $x_i$ is equal to 0 or the corresponding constraint in the dual is tight.
-A feasible solution $x$ is optimal if and only if it satisifies the complementary slackness condition.
+\[
+\begin{array}{lr}
+  \textrm{Dual: maximize}   & \sum^n_{i=1} b_j y_j  \\
+  \textrm{subject to:} & \\
+  \quad \textrm{for each $i$} & \sum_{j=1}^m a_{ij} y_j \leq c_i \\
+  \quad \textrm{for each $j$} & y_j \geq 0 \\
+\end{array}
+\]
+
+A feasible solution $x = (x_i, \ldots, x_n)$ to the primal and a feasible solution $y = (y_i, \ldots, y_m)$ to the dual satisfy the complementary slackness condition if and only if
+\begin{itemize}
+\item for each $i$ we have either $x_i = 0$ or $\sum_{j} a_{ij}y_j = c_i$
+\item and for for each $j$ we have either $y_j = 0$ or $\sum_{i} a_{ij} x_i = b_j$.
+\end{itemize}
+So each variable is either equal to 0 or the corresponding constraint is tight.
+A pair of feasible solutions $x$ and $y$ is optimal if and only if it satisifies the complementary slackness condition.
 
 Approximate slackness relaxes the tightness conditions above.
 As a result, we only get an approximation ratio between the primal and dual solutions satisfying the approximate complementary slackness condition.
@@ -23,9 +36,10 @@ As we will see in the context of online algorithms, this approximation ratio cor
 Now we precisely state the approximate complementary slackness condition.
 Let $x$ and $y$ be feasible solutions to the primal and dual linear programs.
 First we define the primal and dual complementary slackness conditions.
-
-A feasible solution $x$ satisfies the \emph{primal} complementary slackness condition if for $\alpha > 1$ we have $x_i > 0$ or $c_i / \alpha \leq \sum_j a_{ij} y_j \leq c_i$ for any $i$.
-Similarly, $y$ satisifies the \emph{dual} complementary slackness condition if for $\beta > 1$ we have $y_i > 0$ or $b_j \leq \sum_i a_{ij} x_i \leq b_j \beta$.
+\begin{itemize}
+\item A feasible solution $x$ satisfies the \emph{primal} complementary slackness condition if for $\alpha \geq 1$ we have either $x_i > 0$ or $c_i / \alpha \leq \sum_j a_{ij} y_j \leq c_i$ for any $i$.
+\item Similarly, $y$ satisifies the \emph{dual} complementary slackness condition if for $\beta \geq 1$ we have either $y_i > 0$ or $b_j \leq \sum_i a_{ij} x_i \leq b_j \beta$ for any $j$.
+\end{itemize}
 
 If $x$ and $y$ satisify the primal and dual complementary slackness conditions respectively then 
 \[
