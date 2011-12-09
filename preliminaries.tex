@@ -3,14 +3,23 @@ In addition to the standard theorems and definitions about linear programs and d
 First, we review the concept of ordinary complementary slackness.
 Consider the following linear programs:
 
-\vspace{-.5cm}
-\begin{align*}
-& \textnormal{Primal: } \textnormal{minimize} \sum_{i=1}^n c_i x_i \\
- &\qquad \textnormal{subject to } \sum_{i=1}^n a_{ij} x_i  \geq b_j \, , \;\; x_i \geq 0 \\
-& \textnormal{Dual: } \textnormal{maximize} \sum_{j=1}^m b_j y_j \\
- &\qquad \textnormal{subject to } \sum_{j=1}^m a_{ij} y_j \leq c_i \, , \;\; y_j \geq 0
-\end{align*}
-\vspace{-.5cm}
+\[
+\begin{array}{lr}
+  \textrm{Primal: minimize}   & \sum^n_{i=1} c_i x_i  \\
+  \textrm{subject to:} & \\
+  \quad \textrm{for each $j$} & \sum_{i=1}^n a_{ij} x_i \geq b_j \\
+  \quad \textrm{for each $i$} & x_i \geq 0 \\
+\end{array}
+\]
+
+\[
+\begin{array}{lr}
+  \textrm{Dual: maximize}   & \sum^n_{i=1} b_j y_j  \\
+  \textrm{subject to:} & \\
+  \quad \textrm{for each $i$} & \sum_{j=1}^m a_{ij} y_j \leq c_i \\
+  \quad \textrm{for each $j$} & y_j \geq 0 \\
+\end{array}
+\]
 
 A feasible solution $x = (x_i, \ldots, x_n)$ to the primal problem satisifies the complementary slackness condition if and only if for each $i$ we have either $x_i = 0$ or $\sum_{j} a_{ij}y_j = c_i$.
 So either the variable $x_i$ is equal to 0 or the corresponding constraint in the dual is tight.
