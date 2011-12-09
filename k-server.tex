@@ -39,8 +39,8 @@ In the case of $k$-server, the problem we want to solve at each node of the tree
 The Allocation problem is defined as follows:
 We have a uniform metric space with $n$ points and up to $k$ servers.
 For each request $t$, the number of available servers is limited to $k(t) \leq k$.
-Each request is described by a cost vector $h^{(t)} = (h^{(t)}(0), \ldots, h^{(t)}(k))$ where $h^{(t)}(j)$ is the cost of serving the request $t$ with $j$ servers.
-The cost vectors satisfy a natural property: the costs are monotonic, i.e.\ $h^{(t)}(j) \geq h^{(t)}(j + 1)$ (using more servers for a requests cannot increase the cost of serving it).
+Each request is described by a cost vector $h^t = (h^t(0), \ldots, h^t(k))$ where $h^t(j)$ is the cost of serving the request $t$ with $j$ servers.
+The cost vectors satisfy a natural property: the costs are monotonic, i.e.\ $h^t(j) \geq h^t(j + 1)$ (using more servers for a requests cannot increase the cost of serving it).
 When a request comes in, we can move an arbitrary number of available servers to the request before serving it.
 The total cost incurred by the algorithm is divided into two parts:
 \begin{itemize}
@@ -59,5 +59,28 @@ However, Cote et al.\ only showed how to solve the Allocation Problem with these
 The authors of~\cite{bansal10:k-server} used the primal-dual approach to find an algorithm for a restricted version of the Allocation Problem on uniform metrics.
 
 \subsection{The Allocation-C Problem}
-foo foo foo bar
+The Allocation-C problem introduces a second constraint on the cost vector $h^t$.
+In addition to being monotonic, the cost vector is now also \emph{convex}.
+This means that we have $h^t(j+1) - h^t(j +2) \leq h^t(j) - h^t(j + 1)$.
+So the marginal improvement in Hit-Cost for adding a new server to the request decreases with the number of servers already at the request.
+While convexity seems to be a natural property, it does not arise from the reduction of Cote et al.
+However, the authors of~\cite{bansal10:k-server} claim that the convexity property might hold in a more aggregate sense.
 
+The main result of~\cite{bansal10:k-server} is an online algorithm for Allocation-C with the following guarantees (OPT is the optimal offline cost):
+\begin{itemize}
+\item The service cost is at most $(1+\epsilon)$ OPT.
+\item The movement cost is at most $O(\log\frac{k}{\epsilon})$ OPT.
+\end{itemize}
+
+Instead of using the primal dual approach from \cite{buchbinder09:survey} directly, the authors first reduce the Allocation-C problem to another online problem.
+
+In the \emph{Caching with Costs} problem, we have a uniform metric on $l$ points and up to $k$ available servers.
+For each request $t$, the number of available servers is limited to $k(t) \leq k$.
+Each request is described by a cost vector $c^t = (c_1^t, \ldots, c^t_l)$.
+We can redistribute servers among the $l$ points when a new request comes in.
+In contrast to the Allocation-C problem, we now incur a cost $c_i^t$ for each point $i$ with no server present.
+The total cost incurred by the algorithm is divided into the movement cost and the hit cost.
+
+In order to reduce the Allocation-C problem with $n$ points to an instance of Caching with Costs, we introduce $k$ points in Caching with Costs for each original point in Allocation-C (so $l = nk$).
+This allows us to model assigning up to $k$ servers to a point in Allocation-C (note that in Caching with Costs, it is only relevant whether a point is being served, not by how many servers).
+Given a request in Allocation-C, we translate it into Caching with Costs accordingly.
