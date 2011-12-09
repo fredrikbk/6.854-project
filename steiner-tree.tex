@@ -30,7 +30,7 @@ To get an online solution for the LP we use the framework developed in the previ
 
 The algorithm above has competitive ratio $O( \log \textrm{MAX-CUT} )$ and runs in polynomial time.
 
-\subsection{Online Facility Location}
+\subsection{Facility Location}
 We now move on to develop a randomized strategy for the integral version of the connectivity problem based on the fractional solution we got above.Since this is in general very hard to do we will restrict ourselves in a very interesting subproblem, the (non-metric) facility location.
 
 In this problem, there is a set $F$ of possible facilities that we can build along with a certain building cost $c_f$ for every $f \in F$. In this problem clients arrive one at a time and want to be connected to at least one of the built facilities. Every client $i$ has a certain cost $c_{i,f}$ for every facility $f$ that he may be connected to. So the decision we have to make whenever a client appears is whether to connect him to some previously built facility or to build a new facility and connect him to it. Again, since this is an online setting we cannot undo the fact that a facility has been built or that a client has been connected to the facility.
@@ -49,4 +49,22 @@ Since this happens with very low probability we can connect client $i$ to some r
 
 So the competitve ratio of the randomized alogithm is $O(\log n \log m)$ for a total of $n$ requests.
 
-~\cite{naor11:node-weighted-steiner-tree}
+\subsection{Node-Weighted Steiner Tree}
+
+In the node weighted Steiner tree problem, there is an underlying graph $G=(V,E)$ where both vertices and edges have costs ($c_v$ and $c_e$) respectively.At all times, we maintain a network of connected nodes in the graph. Initially this network is empty. Every time a request arrives on a vertex of the graph and it has to be connected to the network via a path formed by nodes and edges that we buy. Again we need to make the decision everytime of what nodes and edges to buy so that we minimize the cost of keeping all the request points connected. Once we buy a node or an edge we can never undo this action.
+
+This problem is very similar to the previous problems and in fact we will show how we can reduce it to facility location to obtain an online algorithm. To do this we use the following lemma ~\cite{naor11:node-weighted-steiner-tree}:
+
+\begin{lemma}
+For any set of nodes $S = \{s_1,...,s_k\}$ and any tree $T \subseteq G$ that contains all nodes in $S$, 
+there exist nodes $v_2, v_3, ... , v_k \in T$, not necessarily distinct, for which:
+\[ \sum_{i=2}^k [c(P_i) - c_{v_i}] \le O(\log k) c(T) \]
+where $c(P_i)$ is the cost of the cheapest path that connects node $s_i$ to some previous node $s_j$ with $j<i$ while going through $v_i$ and $c(T)$ is the cost of the tree. Costs include both node and edge costs.
+\end{lemma}
+
+Using this lemma we observe that for the optimal Steiner tree $T^*$ and its corresponding $v_2, v_3, ... , v_k \in T^*$ it holds that:
+\[ \sum_{i=2}^k [c(P_i) - c_{v_i}] + \sum_{v \in \{v_2, v_3, ... , v_k\}} c_{v} \le O(\log k) c(T^*) \]
+where the second sumation is over the distinct nodes $v_2, v_3, ... , v_k$ and it is at most $c(T^*)$.
+
+It follows that the quantity that minimizes $\sum_{i=2}^k [c(P_i) - c_{v_i}] + \sum_{v \in \{v_2, v_3, ... , v_k\}} c_{v}$ for some nodes $v_2,...,v_k$ is $O(\log k)$ approximate for the node weighted Steiner tree problem. This problem can be viewed as a facility location problem where nodes in the graph are the candidate facility locations and the chosen $v_i$ correspond to the built facilities. Every time a request comes at a node $v$ we calculate the minimum cost of connecting it to some previously requested node for every node $i$ in the graph without including the cost for node $i$. Viewed as a facility location problem this cost corresponds to the cost of connecting the new client to facility $i$. Using the previously developed algorithm for facility location we get a $O(\log^2 k \log n)$ where $k$ is the number of requests and $n$ is the number of nodes in the graph. 
+
