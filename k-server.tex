@@ -1,1 +1,21 @@
-~\cite{bansal10:k-server}
+Recently, the primal-dual technique has been used to explore new approaches to the $k$-server problem~\cite{bansal10:k-server}.
+We first state the problem and describe the current state of the randomized $k$-server conjecture.
+Then we briefly give an overview of the steps involved in applying the primal-dual approach to the $k$-server problem.
+
+\subsection{The $k$-server problem}
+The problem statement is as follows:
+We have $k$ servers located at up to $k$ points in a metric space (essentially a set with a well-behaved distance function) and must serve requests appearing one after another.
+Each request is a point in the metric space and we serve it by moving one of the $k$ servers to the request.
+The goal is to minimize the total distance travelled by all servers.
+
+The $k$-server problem is one of the most important problems in the field of online algorithms.
+One reason is that many online problems can be reduced to the $k$-server problem.
+A common example is the paging problem. For $n$ pages and cache size $k$, the problem can be modelled by a uniform metric space on $n$ points and $k$ servers.
+In a uniform metric space, the distance between all points is equal to 1.
+
+It is conjectured that there is a deterministic $k$-competitive algorithm for the $k$-server problem.
+While the best algorithm for the general case is $2k -1$ competitive, there are $k$-competitive algorithms for some special metrics like trees.
+For the randomized case, the conjectured competitive ratio is $O(\log k)$ and there has been recent work showing a $\tilde{O}(log^3 n \; log^2 k)$ approximation ratio~\cite{bansal11:randomized-k-server}.
+While the results in \cite{bansal11:randomized-k-server} do not use the primal-dual approach for online algorithms, some of the techniques are inspired by problems that were first introduced in the context of the primal dual approach.
+
+\subsection{Applying the primal-dual approach to $k$-server}
