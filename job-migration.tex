@@ -1,10 +1,9 @@
-As we argued earlier, one of the reasons why online algorithms are so interesting is that they model the uncertainty we often face in the real world, where we do not have any certain knowledge about the future.
-However, real-world problems are often more involved than the classical problems typically studied in the online algorithms literature, with more variable factors.
-This often makes them hard to analyze and often prevents us from devising algorithms with provable worst case performance.
+In this section we demonstrate the applicability of the primal-dual method to real-world problems.
+We survey a systems paper, which is primarily interesting because of its applicability to systems design in the real-world, and not necessarily because of its theoretical value.
 
-Linear programming is a powerful technique that is heavily studied in operations research due to its applicability to problems in the real world.
-Since the primal-dual technique starts with an offline linear program we may expect it to also be applicable to many real-world problems.
-To illustrate the flexibility of the primal-dual approach we discuss in this section an algorithm based on the primal-dual method for job-migration between data centers.
+Linear programs are able to capture many real world problems, and the primal-dual technique gives us a tool that lets us to design online algorithms from many linear programs.
+We we illustrate this here by discussing its applicability to a data center job-migration problem.
+
 The goal of the migration is to move jobs to data centers at locations with temporarily cheaper power.
 This algorithm was developed by Buchbinder, Jain and Menache in their 2011 paper \emph{``Online Job-Migration for Reducing the Electricity Bill in the Cloud''} and the companion technical report with the same name~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
 The primal-dual algorithm developed by the authors using the primal-dual method turns out to be too computationally expensive to be used in practice.
