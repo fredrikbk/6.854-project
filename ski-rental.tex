@@ -61,7 +61,7 @@ The primal and dual is given below.
 \]
 
 For the online version, in the $i$-th day a new constraint ($x + d_i  \ge 1$) arrives in the primal problem (updating the objective as necessary) and a new variable ($y_i$) arrives in the dual.
-With the new constraint the primal problem may become infeasible (this happens if $x < 1$). 
+With the new constraint the primal problem may become infeasible (this happens if $x < 1$), so we need to apply an update rule to decide which variable to increase.
 If it is still feasible we do not have to do anything since we already covered the new constraint. 
 Otherwise, we need to decide which variable, $x$ or $d_i$, to increase. 
 To make this decision we look at the dual. 
@@ -116,7 +116,7 @@ Following we see how to make this randomized based on the fractional values we g
 
 %\subsubsection{Randomized Ski Rental}
 Our randomized strategy for deciding is as follows: In the beginning we pick a random value $v$ in the interval $[0,1]$ and we buy skis on the first day that $x \ge v$.
-The probability of buying skis in the first $n$ days is exactly $x^{(n)}$, i.e. the assigned fractional value by the online fractional solution. The probability of renting skis in the $i$-th day is exactly $1-x^{(i)}$.
+The probability of buying skis in the first $i$ days is exactly $x^{(i)}$, i.e. the assigned fractional value by the online fractional solution. The probability of renting skis in the $i$-th day is exactly $1-x^{(i)}$.
 If we go skiing for $n$ days the expected cost of our randomized algorithm is therefore $B \cdot  x^{(n)} + \sum_{i=1}^n(1-x^{(i)})$ which is exactly the same as the objective of the fractional algorithm.
 Thus the randomized algorithm is also $e/(e-1)$-competitive.
 
@@ -157,8 +157,8 @@ Note that the algorithm doesn't depend on the dual variables as in the randomize
 Using this general algorithm we can develop online algorithms for many different optimization problems as we will see in later sections. This algorithm gives us out of the box an efficient online fractional solution as compared to the optimal. It is our responsibility however to use the fractional values that we get to design our response.
 
 \begin{algorithm}
-\label{generalalg}
 \caption{Whenever a new constraint in the primal and a variable in the dual appear}
+\label{generalalg}
 \begin{algorithmic}[1]
 \WHILE{ $\sum_{i \in S(j)} x_i  < 1$}
   \FORALL{$i \in S(j)$}

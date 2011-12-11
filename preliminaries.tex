@@ -14,7 +14,7 @@ Consider the following linear programs:
 
 \[
 \begin{array}{lr}
-  \textrm{Dual: maximize}   & \sum^n_{i=1} b_j y_j  \\
+  \textrm{Dual: maximize}   & \sum^m_{j=1} b_j y_j  \\
   \textrm{subject to:} & \\
   \quad \textrm{for each $i$} & \sum_{j=1}^m a_{ij} y_j \leq c_i \\
   \quad \textrm{for each $j$} & y_j \geq 0 \\
@@ -24,7 +24,7 @@ Consider the following linear programs:
 A feasible solution $x = (x_i, \ldots, x_n)$ to the primal and a feasible solution $y = (y_i, \ldots, y_m)$ to the dual satisfy the complementary slackness condition if and only if
 \begin{itemize}
 \item for each $i$ we have either $x_i = 0$ or $\sum_{j} a_{ij}y_j = c_i$
-\item and for for each $j$ we have either $y_j = 0$ or $\sum_{i} a_{ij} x_i = b_j$.
+\item and for each $j$ we have either $y_j = 0$ or $\sum_{i} a_{ij} x_i = b_j$.
 \end{itemize}
 So each variable is either equal to 0 or the corresponding constraint is tight.
 A pair of feasible solutions $x$ and $y$ is optimal if and only if it satisifies the complementary slackness condition.
