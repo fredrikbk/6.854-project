@@ -91,7 +91,7 @@ So by approximate complementary slackness with $\alpha = 1$ and $\beta = 2$ we g
 
 \subsubsection{Fractional Algorithm Analysis}
 We now move on to get a randomized algorithm for the ski rental problem. 
-We first try to find a fractional online solution and then use the fractional values of the primal variables to get the probabilities of buying and renting the skiis for each day.
+We first try to find a fractional online solution and then use the fractional values of the primal variables to get the probabilities of buying and renting the skis for each day.
 In the deterministic case we always maintained a feasible primal solution and whenever a new constraint appeared on day $i$ we either set $d_i$ or $x$ to 1. For the fractional case we do not have to set $x$ directly to 1 when we reach $B$ days but we can gradually increase $x$ every day. So for every new day $i$ if $x<1$ we use the update rule:
 \begin{itemize}
 \item $x \leftarrow x(1+1/B) + 1/(c\cdot B)$
@@ -118,4 +118,49 @@ Following we see how to make this randomized based on the fractional values we g
 Our randomized strategy for deciding is as follows: In the beginning we pick a random value $v$ in the interval $[0,1]$ and we buy skis on the first day that $x \ge v$.
 The probability of buying skis in the first $n$ days is exactly $x^{(n)}$, i.e. the assigned fractional value by the online fractional solution. The probability of renting skis in the $i$-th day is exactly $1-x^{(i)}$.
 If we go skiing for $n$ days the expected cost of our randomized algorithm is therefore $B \cdot  x^{(n)} + \sum_{i=1}^n(1-x^{(i)})$ which is exactly the same as the objective of the fractional algorithm.
-Thus the randomized algorithm is also $e/(e-1)$-competitve.
+Thus the randomized algorithm is also $e/(e-1)$-competitive.
+
+\subsection{General Approach}
+We can generalize the approach used for ski rental to general covering/packing LPs. A covering LP is one of the form below:
+\[
+	\begin{array}{lr}
+	\textrm{Primal: minimize}   & \sum_{i=1}^n c_i x_i   \\
+	\textrm{subject to:} & \\
+	\textrm{for $1 \le j \le m$} & \sum_{i \in S(j)} x_i  \ge 1  \\
+	\textrm{for $1 \le i \le n$} & x_i  \ge 0  \\
+	\end{array}
+\]
+where each $S(j)$ is an arbitrary subset of the variables.
+The packing LP is the dual of the covering LP and it has the following form:
+\[
+	\begin{array}{lr}
+	\textrm{Dual: maximize}   & \sum_{j=1}^m y_j   \\
+	\textrm{subject to:} & \\
+	\textrm{for $1 \le i \le n$} & \sum_{j | i \in S(j)} y_j  \le c_i  \\
+	\textrm{for $1 \le j \le m$} & y_j \ge 0  \\
+	\end{array}
+\]
+
+As the reader might see this formulation nicely captures ski rental.
+The ski rental primal is a covering problem where we must cover all days with rented or bought skis, and the corresponding dual is a packing problem, where we pack days into the size B.
+
+In the online version a constraint appears every time in the primal LP and a new variable arrives in the dual. We are only allowed to increase the variables at every time step.
+
+Algorithm \ref{generalalg} provides an online fractional solution for every such problem. Using a similar analysis as in the ski-rental problem we can prove that the algorithm is $O(\log d)$-competitive, where \mbox{$d = \max_j\{|S_j|\}$}~\cite{buchbinder09:survey}.
+Note that the algorithm doesn't depend on the dual variables as in the randomized ski rental version. The dual variables are only used in order to bound its competitiveness by comparing the primal and the dual objectives.
+Using this general algorithm we can develop online algorithms for many different optimization problems as we will see in later sections. This algorithm gives us out of the box an efficient online fractional solution as compared to the optimal. It is our responsibility however to use the fractional values that we get to design our response.
+
+\begin{algorithm}
+\label{generalalg}
+\caption{Whenever a new constraint in the primal and a variable in the dual appear}
+\begin{algorithmic}[1]
+\WHILE{ $\sum_{i \in S(j)} x_i  < 1$}
+  \FORALL{$i \in S(j)$}
+    \STATE $x_i \leftarrow x_i (1 + 1/c_i) + 1/(|S(j)| \cdot c_i)$ 
+  \ENDFOR
+  \STATE $y_j \leftarrow y_j + 1$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+
