@@ -4,31 +4,24 @@ We survey a systems paper, which is primarily interesting because of its applica
 Linear programs are able to capture many real world problems, and the primal-dual technique gives us a tool that lets us to design online algorithms from many linear programs.
 We we illustrate this here by discussing its applicability to a data center job-migration problem.
 
-The goal of the migration is to move jobs to data centers at locations with temporarily cheaper power.
-This algorithm was developed by Buchbinder, Jain and Menache in their 2011 paper \emph{``Online Job-Migration for Reducing the Electricity Bill in the Cloud''} and the companion technical report with the same name~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
-The primal-dual algorithm developed by the authors using the primal-dual method turns out to be too computationally expensive to be used in practice.
+The goal of the job migration is to move jobs to data centers at locations with temporarily cheaper power, to decrease energy cost since it now dominate data center operation costs.
+An online algorithm based on the primal-dual method, that takes both energy costs and bandwidth costs into account, was developed by Buchbinder, Jain and Menache~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
+The algorithm is $O(\log H_0)$-competitive, where $H_0$ is the total number of servers in all data center.
+
+The algorithm developed by the authors using the primal-dual method turns out to be too computationally expensive to be used in practice.
 However, it serves as the inspiration for a non-intuitive algorithm that they empirically show to outperform two reasonable greedy heuristics and to be within $4\%-6\%$ of the optimal, on real-world data.
 
 \subsection{Problem Formulation}
 
-% Explain/Motivate problem
-Energy is quickly becoming the dominant cost factor for data center operation.
-It is expected that by 2014, the infrastructure and energy cost of data centers will be 75\% of the total cost.
-The EPA reported the energy cost of server and data center operation in 2007 to be \$4.5 billion, with demand expected to double by 2011.
-% Citation Needed
-Furthermore, CNN reports data centers to account for 2\% of all electricity consumed in the US.
-With such high stakes, it is no surprise that techniques to reduce energy costs in data centers are in high demand.
-
-One technique that has recently been proposed to reduce energy costs when operating multiple geographically distributed data centers is to move tasks to data centers with cheaper energy.
-% Citation Needed
+A technique that has recently been proposed to reduce energy costs when operating multiple geographically distributed data centers is to move tasks to data centers with cheaper energy.
 This approach is motivated by the observation that energy prices are localized and that computation will therefore be cheaper at some sites.
-Furthermore, energy prices are fluctuating and the cheapest data center at one point in time, may not be the cheapest later on.
+Furthermore, energy prices are fluctuating and the cheapest data center at one point in time may not be the cheapest later on.
 This motivates online algorithms that monitor electricity prices and at any time move tasks to data centers where the electricity is the cheapest.
 However, moving data is not free and a cost proportional to the amount of data used is typically incurred.
 These competing constraints make the problem non-trivial, and greedy heuristics with provable performance are not feasible.
 
 % Describe the model and the variables
-Specifically, our problem consist of $n$ data centers, where each data center $i$ contains $H_i$ servers.
+Specifically, our problem consist of $n$ data centers, where each data center $i$ contains $H_i$ servers, with $H_0$ denoting the total number of servers in all data centers.
 The job-load in the system is given by the constant variable $B$ (in the technical report the authors also generalizes to variable workloads).
 At each discretized time step $t$ we must decide whether to move jobs between data centers, taking the bandwidth cost and energy costs into account.
 The migration cost for moving data out of data center $i$ is defined as $d_i$, and the variable $z_{i,j,t}$ is the number of jobs migrated from server $j$ in data center $i$ at time $t$.
@@ -39,7 +32,7 @@ Since the number of servers in each data center is expected to be large we can i
 % Define the LP
 The following (primal) linear program captures the online data center job-migration problem:
 \[
-\textrm{(P) : min}  \sum^n_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}d_{i} \cdot z_{i,j,t} + \sum^{n}_{i=1}\sum^{H_{i}}_{j=1}\sum^{T}_{t=1} c_{i,j,t} \cdot y_{i,j,t}
+\textrm{($P$) : min}  \sum^n_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}d_{i} \cdot z_{i,j,t} + \sum^{n}_{i=1}\sum^{H_{i}}_{j=1}\sum^{T}_{t=1} c_{i,j,t} \cdot y_{i,j,t}
 \]
 \[
 	\begin{array}{rc}
@@ -60,7 +53,7 @@ The third prevents servers from being over-used as each server can only execute 
 The corresponding dual linear program is:
 
 \[
-\textrm{(D) : max}   \sum^{T}_{t=1}B \cdot a_t - \sum^{n}_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}s_{i,j,t}
+\textrm{($D$) : max}   \sum^{T}_{t=1}B \cdot a_t - \sum^{n}_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}s_{i,j,t}
 \]
 \[
 	\begin{array}{rc}
@@ -72,13 +65,60 @@ The corresponding dual linear program is:
 	\end{array}
 \]
 
-%\subsection{Primal-Dual Online Algorithm}
+\subsection{Primal-Dual Online Algorithm}
 
-% Algorithm
+Given these  linear programs we can devise an online algorithm based on the primal-dual method.
+That is, we simultaneously update the primal ($P$) and dual ($D$) in such a way that we always maintain a feasible solution to the dual.
+We can then upper bound the operation cost of the dual, which by weak duality becomes the lower bound of the primal, and hence a bound on the competitive ratio of the algorithm.
 
-% Proof sketch (maybe)
+Algorithm~\ref{job-migration-alg} shows update rule for updating the dual variables.
+The update rule is applied for each server $(i,j)$, and the input of the algorithm is $i$, $j$, and the cost vector $c_t$. 
+The cost vector $c_t$ is defined to be an \emph{elementary} cost vector, namely one where every entry is $0$, except for the one pertaining to the server $i,j$ at that execution of the update rule.
+Note that a more precise name would be $c_{i_t,j_t}$, but $c_t$ is used instead for notational convenience.
+Note also, that the reduction to elementary cost vectors does not affect our solution.
 
-%\subsection{Efficient Online Algorithm}
+\begin{algorithm}
+\caption{Procedure to update dual variables. The procedure is executed for every server $(i,j)$}
+\label{job-migration-alg}
+\begin{algorithmic}[1]
+\REQUIRE Data-center $i_t$, server $j_t$, cost $c_t$ (at time $t$)
+
+\WHILE{$y_{i_t, j_t, t} \neq 0$ \& $-c_t + a_t + b_{i_t,j_t,t} - b_{i_t,j_t,t+1} \neq 0$}
+  \STATE Increase $a_t$ by a small amount
+  \FORALL {$i,j \neq i_t,j_t$ such that $y_{i,j,t} \leq 1$}
+    \STATE Increase $b_{i,j,t+1}$ with rate $\frac{d \cdot b_{i,j,t+1}}{d \cdot a_t} = 1$
+  \ENDFOR
+  \FORALL {$i,j \neq i_t,j_t$ such that $y_{i,j,t} = 1$}
+    \STATE Increase $s_{i,j,t}$ with rate $\frac{d \cdot s_{i,j,t}}{d \cdot a_t}=1$
+  \ENDFOR
+  \FORALL {$i,j=i_t,j_t$}
+    \STATE Decrease $b_{i_t,j_t,t+1}$ so that $\sum_{i,j \neq i_t,j_t}\frac{d \cdot y_{i,j,t}}{d \cdot a_t} = -\frac{d \cdot y_{i_t,j_t,t}}{d \cdot a_t}$
+  \ENDFOR
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+The objective of the dual algorithm is to maximize the dual profit, and it is therefore beneficial to increase $a_t$ as much as possible, without violating constraints.
+However, the update rule is expressed in terms of continuous updates to $a_t$ (i.e., update $a_t$ by a small amount).
+In practice the algorithm would be implemented in terms of discrete-time iterations, and it is possible to achieve this by searching for a scalar value of $a_t$ up to the required precision level.
+
+Finally, as stated earlier, the primal variable, $y_{i,j,t}$, is updated as well along side the updates to the corresponding dual variable $b_{i_t,j_t,t+1}$.
+The following update rule is applied to the primal:
+\[
+ y_{i,j,t} \leftarrow \frac{1}{H_0}\left(\textrm{exp}\left(\ln(1+H_0) \frac{b_{i,j,t+1}}{d_i}\right)-1\right)
+\]
+
+Note that the process is driven by dual updates, and that we determine termination based on it.
+The primal is tied to the dual by (weak) duality, and we can therefore update the primal variables based on their corresponding dual variable.
+
+\begin{theorem}
+ The online algorithm is $O(\log(H_0))$-competitive.
+\end{theorem}
+
+We do not provide a proof here, but it is based on lower bounding the value of the primal minimization problem by the value of the dual maximization problem, by taking advantage of these being linked through the primal update rule.
+A proof sketch is given in~\cite{buchbinder11:job-migration-techreport}, and a detailed proof is given in~\cite{buchbinder11:job-migration}.
+
+\subsection{Efficient Online Algorithm}
 
 % Efficient Algorithm
 
