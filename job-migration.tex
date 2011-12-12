@@ -66,6 +66,7 @@ The corresponding dual linear program is:
 \]
 
 \subsection{Primal-Dual Online Algorithm}
+\label{pd-alg}
 
 Given these  linear programs we can devise an online algorithm based on the primal-dual method.
 That is, we simultaneously update the primal ($P$) and dual ($D$) in such a way that we always maintain a feasible solution to the dual.
@@ -84,16 +85,16 @@ Note also, that the reduction to elementary cost vectors does not affect our sol
 \REQUIRE Data-center $i_t$, server $j_t$, cost $c_t$ (at time $t$)
 
 \WHILE{$y_{i_t, j_t, t} \neq 0$ \& $-c_t + a_t + b_{i_t,j_t,t} - b_{i_t,j_t,t+1} \neq 0$}
-  \STATE Increase $a_t$ by a small amount
-  \FORALL {$i,j \neq i_t,j_t$ such that $y_{i,j,t} \leq 1$}
-    \STATE Increase $b_{i,j,t+1}$ with rate $\frac{d \cdot b_{i,j,t+1}}{d \cdot a_t} = 1$
-  \ENDFOR
-  \FORALL {$i,j \neq i_t,j_t$ such that $y_{i,j,t} = 1$}
-    \STATE Increase $s_{i,j,t}$ with rate $\frac{d \cdot s_{i,j,t}}{d \cdot a_t}=1$
-  \ENDFOR
-  \FORALL {$i,j=i_t,j_t$}
-    \STATE Decrease $b_{i_t,j_t,t+1}$ so that $\sum_{i,j \neq i_t,j_t}\frac{d \cdot y_{i,j,t}}{d \cdot a_t} = -\frac{d \cdot y_{i_t,j_t,t}}{d \cdot a_t}$
-  \ENDFOR
+ \STATE Increase $a_t$ by a small amount
+ \FORALL {$i,j \neq i_t,j_t$ such that $y_{i,j,t} \leq 1$}
+  \STATE Increase $b_{i,j,t+1}$ with rate $\frac{d \cdot b_{i,j,t+1}}{d \cdot a_t} = 1$
+ \ENDFOR
+ \FORALL {$i,j \neq i_t,j_t$ such that $y_{i,j,t} = 1$}
+  \STATE Increase $s_{i,j,t}$ with rate $\frac{d \cdot s_{i,j,t}}{d \cdot a_t}=1$
+ \ENDFOR
+ \FORALL {$i,j=i_t,j_t$}
+  \STATE Decrease $b_{i_t,j_t,t+1}$ so that $\sum_{i,j \neq i_t,j_t}\frac{d \cdot y_{i,j,t}}{d \cdot a_t} = -\frac{d \cdot y_{i_t,j_t,t}}{d \cdot a_t}$
+ \ENDFOR
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
@@ -120,6 +121,42 @@ A proof sketch is given in~\cite{buchbinder11:job-migration-techreport}, and a d
 
 \subsection{Efficient Online Algorithm}
 
-% Efficient Algorithm
+As we mentioned at the beginning of this section, the primal-dual algorithm in section~\ref{pd-alg} is too computationally expensive for practical usage.
+A couple of reasons for this is the cost of discrete time steps in the dual update rule as opposed to a one-shot solution, and the cost of managing one elementary cost vector per dual variable.
+Because of this and because this is an algorithm one would want to implement for data center management, the designers of the primal-dual algorithm also designed a practical $O(n^2)$ algorithm.
+The algorithm is based on the primal-dual algorithm and uses the same ideas, but looses the provable competitive ratio in exchange being computationally less expensive.
+To evaluate the algorithm the authors performed empirical experiments, comparing the algorithm with reasonable and much more intuitive heuristics on real energy cost data.
+
+The iterations of the efficient algorithm is as follows. For each iteration the update rule specifies how much work to move from DC $i$ to DC $k$. Please refer to~\cite{buchbinder11:job-migration-techreport} for a detailed description:
+
+\begin{algorithm}
+\caption{Efficient job migration algorithm}
+\label{job-migration-alg}
+\begin{algorithmic}[1]
+\REQUIRE The cost vector $c=(c_1,c_2,...,c_n)$, and the current load vector $y=(y_1,y_2,...,y_n)$
+\FOR {$k \leftarrow i...n$}
+ \FOR {$i \leftarrow k+1...n$}
+  \STATE Move load from DC $i$ to DC $k$ according to the following migration rule 
+   \[ 
+    \min \left\{ y_i, H_k - y_{k}, s_1 \cdot \frac{c_{i,k}y_i}{d_{i,k}} \cdot (y_k + s_2) \right\}
+   \]
+   where $s_1,s_2 > 0$
+ \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
 % Experiments
+To evaluate the algorithm the authors compared it to the following heuristics:
+\begin{description}
+ \item[Move to Cheap] At each time step, move all tasks to the servers with the least expensive power. This fully optimizes power usage, but does not optimize for bandwidth at all.
+ \item[MimicOPT] At each time step, heuristically attempt to mimic OPT by solving an LP with the energy costs uo until the current time $t$. Note that this algorithm, as opposed to the primal-dual based algorithm, makes no attempt to take future power costs into account.
+\end{description}
+
+They ran the simulated experiments comparing the efficient primal-dual-based online algorithm, move to cheap, and mimicOPT to OPT.
+The experiments were performed on publicly available electricity pricing information from 30 US locations covering January 2006 through March 2009.
+The results show that the efficient primal-dual-based algorithm comes performs within $5.7\%$ of OPT, while move to cheap and mimicOPT only performs within $68.5\%$ and $10.4\%$ of OPT respectively.
+This clearly motivates using an algorithm that is based an algorithm developed using the primal-dual method for such complex problems, as opposed to greedy heuristics even if these are more intuitive.
+
+
+
