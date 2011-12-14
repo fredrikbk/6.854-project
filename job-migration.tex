@@ -1,18 +1,19 @@
 In this section we demonstrate the applicability of the primal-dual method to real-world problems.
 We survey a systems paper, which is primarily of interest because of its applicability to system design, and not necessarily because of its theoretical value.
 
-Linear programs are able to capture many real world problems. The primal-dual method gives us a tool that helps us to design online algorithms for many problems that can be expressed as linear programs.
-We we illustrate this here by discussing its applicability to a data center job-migration problem.
+Linear programs capture many important real world problems. 
+Since the primal-dual method gives us a tool to design online algorithms for many problems that can be expressed as linear programs, we can expect it to be useful for many real-world applications.
+We give one example here by discussing its applicability to a data center job-migration problem.
 
 The goal is to move jobs to data centers at locations with temporarily cheaper power.
 This is highly topical as energy over the last ten years has come to dominate data center operation costs.
-An online algorithm based on the primal-dual method that takes both energy costs and bandwidth costs into account was developed by Buchbinder, Jain and Menache~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
+Buchbinder, Jain and Menache developed an online algorithm based on the primal-dual method that takes both energy costs and bandwidth costs into account~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
 The algorithm is $O(\log H_0)$-competitive, where $H_0$ is the total number of servers in all data center.
 
-The algorithm the authors design using the primal-dual method turns out to be too computationally expensive to be used in practice.
-However, they use it as inspiration in the design of an efficient non-intuitive algorithm.
-The authors can not prove a worst case bound on this algorithm, but they show empirically that it outperform two reasonable greedy heuristics on real-world data.
-In fact, it performs to within $4\%-6\%$ of the optimal on this data.
+The algorithm using the primal-dual method turned out to be too computationally expensive to be used in practice.
+However, the authors used it as inspiration in the design of an efficient non-intuitive algorithm.
+The authors can not prove a worst case bound on this algorithm, but they show empirically that it outperforms two reasonable greedy heuristics on real-world data.
+In fact, it performs to within $4\%-6\%$ of the optimum on this data.
 
 \subsection{Problem Formulation}
 
@@ -26,8 +27,8 @@ These competing constraints make the problem non-trivial, and greedy heuristics 
 % Describe the model and the variables
 Specifically, the domain consists of $n$ data centers, where each data center $i$ contains $H_i$ servers.
 $H_0$ denotes the total number of servers in all data centers.
-At each discretized time step $t$ we must decide whether to move jobs between data centers, taking the bandwidth cost and energy costs into account.
-The job load in the system is given by the constant variable $B$, although the authors generalizes to variable workloads $B_{t}$ in the technical report.
+At each time step $t$ we must decide whether to move jobs between data centers, taking the bandwidth cost and energy costs into account.
+The job load in the system is given by the constant variable $B$, although the authors generalize to variable workloads $B_{t}$ in the technical report.
 It costs $d_i$ to move data out of data center $i$, and the variable $z_{i,j,t}$ denotes the number of jobs migrated from server~$j$ in data center $i$ at time $t$.
 Finally, $c_{i,j,t}$ is the energy cost of operating server $j$ in data center $i$ at time $t$, and $y_{i,j,t}$ is the fraction of server $j$ of data center $i$ that is utilized at time $t$.
 Jobs are defined as using exactly one server, so the number of servers needed at data center $i$ at time $t$ is $\lceil \sum^{H_i}_{j=1}y_{i,j,t} \rceil$.
@@ -78,7 +79,7 @@ That is, we simultaneously update the primal ($P$) and dual ($D$) in such a way 
 We can then upper bound the operation cost of the dual, which by weak duality becomes the lower bound of the primal, and hence a bound on the competitive ratio of the algorithm.
 
 Algorithm~\ref{job-migration-alg} shows the update rule for the dual variables.
-The update rule is applied for each server $(i,j)$, and the input of the algorithm is $i$, $j$, and the cost vector $c_t$. 
+The update rule is applied for each server $(i,j)$, and the cost vector $c_{t}$ is supplied as input.
 The cost vector $c_t$ is defined to be an \emph{elementary} cost vector. That is, every entry is $0$ except for the cost of server $i,j$ at that execution of the update rule.
 Note that a more precise name would be $c_{i_t,j_t}$, but $c_t$ is used instead for notational convenience.
 Note also that the reduction to elementary cost vectors does not affect the solution.
@@ -133,14 +134,14 @@ Because of this the designers of the primal-dual algorithm also designed a pract
 This algorithm is based on the primal-dual algorithm and uses the same ideas, but looses the provable competitive ratio in exchange for efficiency.
 To evaluate the algorithm the authors performed empirical experiments comparing the algorithm with reasonable, and much more intuitive, heuristics on real electricity price data.
 
-The iterations of the efficient algorithm is as follows. For each iteration the update rule specifies how much work to move from data center $i$ to data center $k$. Please refer to~\cite{buchbinder11:job-migration-techreport} for a detailed description:
+The iterations of the efficient algorithm is as follows. For each iteration the update rule specifies how much work to move from data center $i$ to data center $k$. A detailed description can be found in~\cite{buchbinder11:job-migration-techreport}.
 
 \begin{algorithm}
 \caption{Efficient job migration algorithm}
 \label{job-migration-alg}
 \begin{algorithmic}[1]
 \REQUIRE The cost vector $c=(c_1,c_2,...,c_n)$, and the current load vector $y=(y_1,y_2,...,y_n)$
-\FOR {$k \leftarrow i...n$}
+\FOR {$k \leftarrow 1...n$}
  \FOR {$i \leftarrow k+1...n$}
   \STATE Move load from DC $i$ to DC $k$ according to the following migration rule 
    \[ 
