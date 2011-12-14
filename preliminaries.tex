@@ -32,6 +32,8 @@ A pair of feasible solutions $x$ and $y$ is optimal if and only if it satisifies
 Approximate slackness relaxes the tightness conditions above.
 As a result, we only get an approximation ratio between the primal and dual solutions satisfying the approximate complementary slackness condition.
 As we will see in the context of online algorithms, this approximation ratio corresponds to the competitive ratio.
+The reason is that we formulate LPs for the offline version of a problem which we then approximate with an online algorithm.
+So the ratio between the primal and the dual solution gives a bound on the competitive ratio.
 
 Now we precisely state the approximate complementary slackness condition.
 Let $x$ and $y$ be feasible solutions to the primal and dual linear programs.
