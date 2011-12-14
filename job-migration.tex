@@ -40,7 +40,7 @@ The following (primal) linear program captures the \emph{offline} data center jo
 \textrm{($P$) : min}  \sum^n_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}d_{i} \cdot z_{i,j,t} + \sum^{n}_{i=1}\sum^{H_{i}}_{j=1}\sum^{T}_{t=1} c_{i,j,t} \cdot y_{i,j,t}
 \]
 \[
-	\begin{array}{rc}
+	\begin{array}{lr}
 	\textrm{subject to :} & \\
 		\forall t \textrm{ :} & \sum^n_{i=1}\sum^{H_i}_{j=1}y_{i,j,t} \geq B \\
 		\forall i,j,t \textrm{ :}	    & z_{i,j,t} \geq y_{i,j,t-1} - y_{i,j,t} \\
@@ -62,7 +62,7 @@ The corresponding dual linear program is:
 \textrm{($D$) : max}   \sum^{T}_{t=1}B \cdot a_t - \sum^{n}_{i=1}\sum^{H_i}_{j=1}\sum^{T}_{t=1}s_{i,j,t}
 \]
 \[
-	\begin{array}{rc}
+	\begin{array}{lr}
 	\textrm{s.t. :} & \\
 		\forall i,j,t \textrm{ :}	    & -c_{i,j,t} + a_t + b_{i,j,t} - b_{i,j,t+1} - s_{i,j,t} \leq 0 \\
 		\forall i,j,t \textrm{ :}	    & b_{i,j,t} \leq d_i \\

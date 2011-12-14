@@ -1,24 +1,31 @@
 \subsection{Preliminaries}
 In addition to the standard theorems and definitions about linear programs and duality we introduce \emph{approximate} complementary slackness.
-First, we review the concept of ordinary complementary slackness.
-Consider the following linear programs:
-
+First, we review the concept of complementary slackness.
+Consider the following primal/dual linear programs:
 \[
-\begin{array}{lr}
-  \textrm{Primal: minimize}   & \sum^n_{i=1} c_i x_i  \\
-  \textrm{subject to:} & \\
-  \quad \textrm{for each $j$} & \sum_{i=1}^n a_{ij} x_i \geq b_j \\
-  \quad \textrm{for each $i$} & x_i \geq 0 \\
-\end{array}
+\textrm{($P$) : min}  \sum^n_{i=1} c_i x_i
+\]
+\[
+	\begin{array}{lr}
+	\textrm{subject to :} & \\
+	\forall j \textrm{ :} & \sum_{i=1}^n a_{ij} x_i \geq b_j \\
+	\forall i \textrm{ :} & x_i \geq 0 \\
+	\end{array}
 \]
 
+\vspace{0.1cm}
+\hrule
+\vspace{0.1cm}
+
 \[
-\begin{array}{lr}
-  \textrm{Dual: maximize}   & \sum^m_{j=1} b_j y_j  \\
-  \textrm{subject to:} & \\
-  \quad \textrm{for each $i$} & \sum_{j=1}^m a_{ij} y_j \leq c_i \\
-  \quad \textrm{for each $j$} & y_j \geq 0 \\
-\end{array}
+\textrm{($D$) : max}  \sum^m_{j=1} b_j y_j
+\]
+\[
+	\begin{array}{lr}
+	\textrm{subject to :} & \\	
+	\forall i \textrm{ :} & \sum_{j=1}^m a_{ij} y_j \leq c_i \\
+	\forall j \textrm{ :} & y_j \geq 0 \\
+	\end{array}
 \]
 
 A feasible solution $x = (x_i, \ldots, x_n)$ to the primal and a feasible solution $y = (y_i, \ldots, y_m)$ to the dual satisfy the complementary slackness condition if and only if

@@ -25,7 +25,7 @@ First, we define the primal LP.
 \textrm{($P$) : min}  \sum_{p=1}^n\sum_{t=1}^T w_p \cdot z_{p,t} + \sum_{t=1}^T \infty \cdot y_{p_t,t}
 \]
 \[
-	\begin{array}{rr}
+	\begin{array}{lr}
 	\textrm{subject to :} & \\
 		\forall t \textrm{ and } S \subseteq [n] \textrm{ with }|S| > k \textrm{ :} & \sum_{p\in S} y_{p,t} \geq |S| - k \\
 		\forall t,p \textrm{ :} & z_{p,t} \geq y_{p,t-1} - y_{p,t} \\
@@ -44,7 +44,7 @@ The dual LP is
 \textrm{($D$) : max}  \sum_{t=1}^T\sum_S (|S| - k) a_{S,t}
 \]
 \[
-	\begin{array}{rr}
+	\begin{array}{lr}
 	\textrm{subject to :} & \\
 	\forall t,p \neq p_t \textrm{ :} & \sum_{S: p \in S} a_{S,t} - b_{p, t+1} + b_{p,t} \leq 0 \\
 	\forall t,p \textrm{ :} & b_{p,t} \leq w_p \\
@@ -134,7 +134,7 @@ The primal LP for Caching with Costs is:
 \textrm{($P$) : min}  \sum_{t=1}^T c_{p_t, t} \cdot y_{p_t,t} + \sum_{i=1}^n\sum_{t=1}^{T+1} z_{i,t}
 \]
 \[
-	\begin{array}{rr}
+	\begin{array}{lr}
 	\textrm{subject to :} & \\
 		\forall t \textrm{ and } S \subseteq [l] \textrm{ :} & \sum_{i : i \in S} y_{i,t} \geq |S| - k(t) \\
 		\forall t,i \textrm{ :} & z_{i,t} \geq y_{i,t-1} - y_{i,t} \\
@@ -154,7 +154,7 @@ The dual LP is:
 \textrm{($D$) : max}  \sum_{t=1}^T\sum_S (|S| - k(t)) \alpha_{t,S} + \sum_{i | \textrm{no server at }i} \gamma_i
 \]
 \[
-	\begin{array}{rr}
+	\begin{array}{lr}
 	\textrm{subject to :} & \\
 		\forall t,i \textrm{ :} & \sum_{S: i\in S} \alpha_{t,S} + \beta_{i,t} - \beta_{i,t+1} \leq c_{i,t}\\
 		\forall t,i \textrm{ :} & \gamma_i \geq \beta_{i, 1} \\
