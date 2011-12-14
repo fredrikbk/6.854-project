@@ -89,6 +89,9 @@ By the update rule we have that:
 
 So by approximate complementary slackness with $\alpha = 1$ and $\beta = 2$ we get that the primal objective is at most 2 times the dual objective. Therefore, it is at most 2 times the optimal offline solution and thus it is 2-competitive.
 
+Note how we use the dual constraints to decide which primal variables to update.
+The idea is to update the variables so that we maintain the complementary slackness conditions, which then allows us to bound the competitive ratio.
+
 \subsubsection{Randomized Algorithm}
 We now move on to get a randomized algorithm for the ski rental problem. 
 We first try to find a fractional online solution and then use the fractional values of the primal variables to get the probabilities of buying and renting the skis for each day.
