@@ -6,8 +6,8 @@ In the early 2000's an application of this technique to online algorithms was di
 
 % Talk about how it allows you to specify online programs as offline linear programs that are then solved incrementally online using the technique.
 % Solve program incrementally by successively adding in variables and constraints
-The primal-dual method provides us with a fairly general framework to turn linear programs solving \emph{offline} problems into approximate solvers for the \emph{online} counter-parts.
-In online problems information is revealed in pieces, and we must at each step make irrevocable decisions based on the limited knowledge we have thus far.
+The primal-dual method provides us with a surprisingly general framework to turn linear programs solving \emph{offline} problems into approximate solvers for the \emph{online} counter-parts.
+In online problems information is revealed in pieces, and we must make irrevocable decisions at each step based on the limited knowledge we have thus far.
 Correspondingly, the primal-dual method allows us to add one or more constraints to our linear program at a time, and it approximates the solution at each step without changing any assignments to variables it made in the past.
 Thus, we do not have to start from scratch when designing an online algorithm that has a known offline linear program.
 We can instead start from the linear program, and use the ideas from the primal-dual literature to devise an online algorithm.
