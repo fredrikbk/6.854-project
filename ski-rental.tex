@@ -55,7 +55,7 @@ The primal and dual are given below.
 	\end{array}
 \]
 
-\vspace{0.4cm}
+\vspace{0.6cm}
 
 \[
 \textrm{($D$) : max} \sum^n_{i=1} y_i
@@ -78,7 +78,7 @@ Thus we increase $y_i$ until we hit a constraint in the dual problem.
 This constraint corresponds to a variable in the primal problem, either $d_i$ or $x$.
 We set this variable equal to 1.
 
-Notice that the algorithm corresponds to exactly the same strategy we described previously, i.e.\ the skier rents skis for the first B days and then buys them.
+Notice that the algorithm corresponds to exactly the same strategy we described earlier. That is, the skier rents skis the first $B$ days and then buys them.
 
 %\subsubsection{Analysis}
 
@@ -87,7 +87,7 @@ The key idea is that every time the algorithm makes a change in the primal LP, a
 This function gives the competitive ratio of the algorithm.
 
 For the previous algorithm, we note that the update rule always maintains a feasible solution for both the primal and the dual. 
-In order to bound the ratio between their objectives we use approximate complementary slackness. 
+In order to bound the ratio between their objective functions we use approximate complementary slackness. 
 By the update rule we have that:
 \begin{itemize}
 \item Whenever $x > 0$, $\sum^n_{i=1} y_i = B$ (tight)

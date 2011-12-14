@@ -20,7 +20,7 @@ To get an online solution for the LP we use the framework developed in the previ
 So the modified version of algorithm~\ref{generalalg} performs the following update for every request:
 
 \begin{algorithm}
-\caption{The following update rule is applied on every request($S_i$,$T_i$)}
+\caption{Update rule for the primal and dual variables. The rule is applied when a new request ($S_i$,$T_i$) appears.}
 \begin{algorithmic}[1]
 \WHILE{the max $S_i \rightarrow T_i$ flow is less than 1}
   \STATE Find the minimum  $(S_i,T_i)$ cut $C$
