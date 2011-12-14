@@ -1,12 +1,28 @@
 Recently, the primal-dual technique has been used to explore new approaches to the $k$-server problem~\cite{bansal10:k-server}.
-We first state the problem and describe the current state of the randomized $k$-server conjecture.
-Then we briefly give an overview of the steps involved in applying the primal-dual approach to the $k$-server problem.
+In this application, the authors also extend the primal-dual technique to deal with a wider range of LPs.
+We first demonstrate the extended primal-dual technique with an example from~\cite{bansal10:k-server}.
+Then we briefly give an overview of the steps involved in applying the primal-dual technique to the $k$-server problem.
+
+\subsection{Extended Primal-Dual Technique}
+One of the main limitations of the original primal-dual technique is the restriction to non-negative constraints and variables.
+Using the basic approach described in section \ref{section:general_approach}, it impossible to include natural constraints like $x_i \geq x_j$, which have to be converted to $x_i - x_j \geq 0$ in an LP (note the negative coefficient of $x_j$).
+This condition restricts the set of problems we can model or makes natural LP formulations more complex.
+The main technical contribution of~\cite{bansal10:k-server} is to overcome these limitations.
+
+We illustrate the the extended primal-dual framework with the weighted caching problem.
+In this problem, we have a cache of size $k$ and a total of $n$ pages, each with a weight $w_i$.
+At each time step, we receive a request for a page $p$.
+If $p$ is not in the cache, we have to evict one page from the cache and replace it with $p$.
+Fetching $p$ into the cache costs $w_p$.
+The goal is to minimize the total cost of fetching pages.
+
+The first randomized $O(\log k)$ competitive algorithm for the weighted caching problem also used the primal-dual framework but required a more complicated approach than the following algorithm~\cite{bansal07:weighted-paging}.
 
 \subsection{The $k$-Server Problem}
 The problem statement is as follows:
 We have $k$ servers located at up to $k$ points in a metric space (essentially a set with a well-behaved distance function) and must serve requests appearing one after another.
 Each request is a point in the metric space and we serve it by moving one of the $k$ servers to the request.
-The goal is to minimize the total distance travelled by all servers.
+The goal is to minimizhee the total distance travelled by all servers.
 
 The $k$-server problem is one of the most important problems in the field of online algorithms.
 One reason is that many online problems can be reduced to the $k$-server problem.
