@@ -27,9 +27,9 @@ These competing constraints make the problem non-trivial, and greedy heuristics 
 % Describe the model and the variables
 Specifically, the domain consists of $n$ data centers, where each data center $i$ contains $H_i$ servers.
 $H_0$ denotes the total number of servers in all data centers.
-At each time step $t$ we must decide whether to move jobs between data centers, taking the bandwidth cost and energy costs into account.
-The job load in the system is given by the constant variable $B$, although the authors generalize to variable workloads $B_{t}$ in the technical report.
-It costs $d_i$ to move data out of data center $i$, and the variable $z_{i,j,t}$ denotes the number of jobs migrated from server~$j$ in data center $i$ at time $t$.
+At any time there are $B$ jobs in the system and each job must be assigned to some server\footnote{The technical report generalizes to variable workloads $B_{t}$}.
+At each time step $t$ the energy cost of data centers change and we must decide whether to move jobs. 
+It costs $d_i$ to move data out of data center $i$, and the variable $z_{i,j,t}$ denotes the fractional number of jobs migrated from server~$j$ in data center $i$ at time $t$.
 Finally, $c_{i,j,t}$ is the energy cost of operating server $j$ in data center $i$ at time $t$, and $y_{i,j,t}$ is the fraction of server $j$ of data center $i$ that is utilized at time $t$.
 Jobs are defined as using exactly one server, so the number of servers needed at data center $i$ at time $t$ is $\lceil \sum^{H_i}_{j=1}y_{i,j,t} \rceil$.
 Since the number of servers in each data center is expected to be large we ignore the added fraction introduced by the ceiling operator.

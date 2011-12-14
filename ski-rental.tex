@@ -43,22 +43,30 @@ In order to apply the primal-dual approach, we first have to relax the integer l
 
 The primal-dual method approximates the solution to the linear program incrementally by updating the primal and dual simultaneously.
 The primal and dual is given below.
+\[
+\textrm{($P$) : min} \textrm{ } B\cdot x + \sum^n_{i=1} d_i
+\]
+\[
+	\begin{array}{lr}
+	\textrm{subject to :} & \\
+	\textrm{$\forall$ day $i$} \textrm{ :} & x + d_i  \ge 1  \\
+			    & x     \geq 0, \forall i : d_i \ge 0
+
+	\end{array}
+\]
+
+\vspace{0.4cm}
 
 \[
-	\begin{array}{lr}
-	\textrm{Primal: minimize}   & B\cdot x + \sum^n_{i=1} d_i   \\
-	\textrm{subject to:} & \\
-	\textrm{for each day $i$} & x + d_i  \ge 1  \\
-			    & x     \geq 0, \forall i : d_i \ge 0
-	\end{array}
+\textrm{($D$) : max} \sum^n_{i=1} y_i
 \]
 \[
 	\begin{array}{lr}
-	\textrm{Dual: maximize}   & \sum^n_{i=1} y_i   \\
-	\textrm{subject to:} & \sum^n_{i=1} y_i \le B \\
-	\textrm{for each day $i$} & 0 \le y_i  \le 1
+	\textrm{subject to :} & \sum^n_{i=1} y_i \le B \\
+		\textrm{$\forall$ day $i$} \textrm{ :} & 0 \le y_i  \le 1 \\
 	\end{array}
 \]
+
 
 For the online version, in the $i$-th day a new constraint ($x + d_i  \ge 1$) arrives in the primal problem (updating the objective as necessary) and a new variable ($y_i$) arrives in the dual.
 With the new constraint the primal problem may become infeasible (this happens if $x < 1$), so we need to apply an update rule to decide which variable to increase.
@@ -128,24 +136,31 @@ Thus the randomized algorithm is also $e/(e-1)$-competitive.
 We can generalize the approach used for ski rental to a wide class of linear programs.
 This class contains linear programs of the following form:
 \[
+\textrm{($P$) : min}  \sum_{i=1}^n c_i x_i
+\]
+\[
 	\begin{array}{lr}
-	\textrm{Primal: minimize}   & \sum_{i=1}^n c_i x_i   \\
-	\textrm{subject to:} & \\
-	\textrm{for $1 \le j \le m$} & \sum_{i \in S(j)} x_i  \ge 1  \\
-	\textrm{for $1 \le i \le n$} & x_i  \ge 0  \\
+	\textrm{subject to :} & \\
+	\textrm{for $1 \le j \le m$} \textrm{ :} & \sum_{i \in S(j)} x_i  \ge 1  \\
+	\textrm{for $1 \le i \le n$} \textrm{ :} & x_i  \ge 0  \\
+
 	\end{array}
 \]
+
 where each $S(j)$ is an arbitrary subset of the variables.
 Such LPs are called \emph{covering LPs}, because they model problems where all elements of a set have to be covered by a collection of other sets.
 Examples of this include ski rental, where all days have to be covered by renting or buying skis, vertex cover, edge cover, set cover, and the problems in section 3--5.
 
 The dual of a covering LP is called a \emph{packing LP} and has the following form:
 \[
+\textrm{($D$) : max}  \sum_{j=1}^m y_j
+\]
+\[
 	\begin{array}{lr}
-	\textrm{Dual: maximize}   & \sum_{j=1}^m y_j   \\
-	\textrm{subject to:} & \\
-	\textrm{for $1 \le i \le n$} & \sum_{j | i \in S(j)} y_j  \le c_i  \\
-	\textrm{for $1 \le j \le m$} & y_j \ge 0  \\
+	\textrm{subject to :} & \\
+	\textrm{for $1 \le i \le n$} \textrm{ :} & \sum_{j | i \in S(j)} y_j  \le c_i  \\
+	\textrm{for $1 \le j \le m$} \textrm{ :} & y_j \ge 0  \\
+
 	\end{array}
 \]
 

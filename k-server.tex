@@ -22,13 +22,15 @@ It is worth noting that the first randomized $O(\log k)$ competitive algorithm a
 
 First, we define the primal LP.
 \[
-\begin{array}{lr}
-  \multicolumn{2}{l}{\textrm{minimize} \quad  \sum_{p=1}^n\sum_{t=1}^T w_p \cdot z_{p,t} + \sum_{t=1}^T \infty \cdot y_{p_t,t}} \\
-  \textrm{subject to:} & \\
-  \forall t \textrm{ and } S \subseteq [n] \textrm{ with }|S| > k & \sum_{p\in S} y_{p,t} \geq |S| - k \\
-  \forall t \textrm { and page } p & z_{p,t} \geq y_{p,t-1} - y_{p,t} \\
-  \forall t \textrm { and page } p & z_{p,t}, y_{p,t} \geq 0 \\
-\end{array}
+\textrm{($P$) : min}  \sum_{p=1}^n\sum_{t=1}^T w_p \cdot z_{p,t} + \sum_{t=1}^T \infty \cdot y_{p_t,t}
+\]
+\[
+	\begin{array}{rr}
+	\textrm{subject to :} & \\
+		\forall t \textrm{ and } S \subseteq [n] \textrm{ with }|S| > k \textrm{ :} & \sum_{p\in S} y_{p,t} \geq |S| - k \\
+		\forall t,p \textrm{ :} & z_{p,t} \geq y_{p,t-1} - y_{p,t} \\
+		\forall t,p \textrm{ :} & z_{p,t}, y_{p,t} \geq 0 \\
+	\end{array}
 \]
 
 The variable $y_{p,t}$ denotes the fraction of page $p$ missing at time $t$.
@@ -39,19 +41,21 @@ The first constraint ensures that only a total of $k$ pages are in the cache at 
 
 The dual LP is
 \[
-\begin{array}{lr}
-  \multicolumn{2}{l}{\textrm{maximize} \qquad  \sum_{t=1}^T\sum_S (|S| - k) a_{S,t}} \\
-  \textrm{subject to:} & \\
-  \multicolumn{2}{l}{\forall t \textrm{ and } p \neq p_t \qquad\sum_{S: p \in S} a_{S,t} - b_{p, t+1} + b_{p,t} \leq 0} \\
-  \forall t \textrm{ and } p & b_{p,t} \leq w_p \\
-  \forall t \textrm{ and } p \textrm{ and } |S| > k & a_{t,S}, b_{p,t} \geq 0 \\
-\end{array}
+\textrm{($D$) : max}  \sum_{t=1}^T\sum_S (|S| - k) a_{S,t}
+\]
+\[
+	\begin{array}{rr}
+	\textrm{subject to :} & \\
+	\forall t,p \neq p_t \textrm{ :} & \sum_{S: p \in S} a_{S,t} - b_{p, t+1} + b_{p,t} \leq 0 \\
+	\forall t,p \textrm{ :} & b_{p,t} \leq w_p \\
+	\forall t,p \textrm{ and } |S| > k \textrm{ :} & a_{t,S}, b_{p,t} \geq 0 \\
+	\end{array}
 \]
 
 We now sketch the corresponding algorithm for iteratively constructing a solution to the primal.
 The following relation between the primal and dual is maintained at all times:
 \[
-y_{p,t} = \frac{1}{k} \cdot \left( \exp \left( \frac{b_{p,t+1}}{w_p} \cdot \ln(1+k) \right) - 1 \right)
+y_{p,t} \leftarrow \frac{1}{k} \cdot \left( \exp \left( \frac{b_{p,t+1}}{w_p} \cdot \ln(1+k) \right) - 1 \right)
 \]
 When a new request for page $p_t$ arrives, we set all variables $y_{p,t}$ for $p \neq p_t$ to the previous value for time $t-1$.
 Moreover, we set $y_{p_t, t} = b_{p_t, t} = 0$ because page $p_t$ has to be in the cache.
@@ -127,14 +131,17 @@ The authors show that Allocation-C and Caching with Costs can be reduced to each
 Moreover, Caching with Costs can be simplified so that at time $t$, only one location $p_t$ has non-zero cost $c_{p_t}$.
 The primal LP for Caching with Costs is:
 \[
-\begin{array}{lr}
-  \multicolumn{2}{l}{\textrm{minimize} \quad  \sum_{t=1}^T c_{p_t, t} \cdot y_{p_t,t} + \sum_{i=1}^n\sum_{t=1}^{T+1} z_{i,t}} \\
-  \textrm{subject to:} & \\
-  \forall t \textrm{ and } S \subseteq [l] & \sum_{i : i \in S} y_{i,t} \geq |S| - k(t) \\
-  \forall t \textrm { and location } i & z_{i,t} \geq y_{i,t-1} - y_{i,t} \\
-  \forall t \textrm { and location } i & z_{i,t}, y_{i,t} \geq 0 \\
-\end{array}
+\textrm{($P$) : min}  \sum_{t=1}^T c_{p_t, t} \cdot y_{p_t,t} + \sum_{i=1}^n\sum_{t=1}^{T+1} z_{i,t}
 \]
+\[
+	\begin{array}{rr}
+	\textrm{subject to :} & \\
+		\forall t \textrm{ and } S \subseteq [l] \textrm{ :} & \sum_{i : i \in S} y_{i,t} \geq |S| - k(t) \\
+		\forall t,i \textrm{ :} & z_{i,t} \geq y_{i,t-1} - y_{i,t} \\
+		\forall t,i \textrm{ :} & z_{i,t}, y_{i,t} \geq 0 \\
+	\end{array}
+\]
+
 
 The LP is similar to the one for the weighted caching problem described earlier.
 The variable $y_{i,t}$ indicates whether a server is located at point $i$ at time $t$.
@@ -144,21 +151,22 @@ The first constraint guarantees that at most $k(t)$ servers are in use at time $
 
 The dual LP is:
 \[
-\begin{array}{lr}
-  \multicolumn{2}{l}{\textrm{maximize} \quad  \sum_{t=1}^T\sum_S (|S| - k(t)) \alpha_{t,S}} \\
-  \multicolumn{2}{r}{ + \sum_{i | \textrm{no server at }i} \gamma_i}\\
-  \textrm{subject to:} & \\
-  \forall t \textrm { and location } i & \sum_{S: i\in S} \alpha_{t,S} + \beta_{i,t} - \beta_{i,t+1} \leq c_{i,t}\\
-  \forall t \textrm { and location } i & \gamma_i \geq \beta_{i, 1} \\
-  \forall t \textrm { and location } i & 0 \leq \beta_{i, t} \leq 1\\
-  \forall t \textrm { and } S \subseteq [l]  & a_{t,S} \geq 0\\
-\end{array}
+\textrm{($D$) : max}  \sum_{t=1}^T\sum_S (|S| - k(t)) \alpha_{t,S} + \sum_{i | \textrm{no server at }i} \gamma_i
+\]
+\[
+	\begin{array}{rr}
+	\textrm{subject to :} & \\
+		\forall t,i \textrm{ :} & \sum_{S: i\in S} \alpha_{t,S} + \beta_{i,t} - \beta_{i,t+1} \leq c_{i,t}\\
+		\forall t,i \textrm{ :} & \gamma_i \geq \beta_{i, 1} \\
+		\forall t,i \textrm{ :} & 0 \leq \beta_{i, t} \leq 1\\
+		\forall t \textrm { and } S \subseteq [l] \textrm{ :} & a_{t,S} \geq 0\\
+	\end{array}
 \]
 
 
 The algorithm for Caching with Costs is similar to weighted paging.
 Again, we maintain a relation between the primal and dual:
 \[
-y_{i,t} = \frac{\epsilon}{1 + k} \left( \exp\left( \ln\left( 1 + \frac{1+k}{\epsilon} \right) \cdot \beta_{i, t+1} \right) - 1 \right)
+y_{i,t} \leftarrow \frac{\epsilon}{1 + k} \left( \exp\left( \ln\left( 1 + \frac{1+k}{\epsilon} \right) \cdot \beta_{i, t+1} \right) - 1 \right)
 \]
 By considering the derivatives of the primal and dual objective functions, the authors prove the desired bounds for Caching with Costs which carry through to Allocation-C.

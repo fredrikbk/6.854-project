@@ -4,12 +4,14 @@ In this section we apply the primal-dual framework to three online graph optimiz
 
 In the fractional connectivity problem there is an underlying undirected graph $G = (V,E)$ where each edge $e$ has a non-negative cost $c_e$. At each time step, a new request arrives in the form $(S_i,T_i)$ where $S_i$ and $T_i$ are two non-empty disjoint subsets of $V$ and the goal is to send a unit of flow from $S_i$ to $T_i$. To do this we buy capacity on the edges. If we buy capacity $x_e$ on an edge $e$ we have to pay $x_e \cdot c_e$. In the online setting once we buy capacity in an edge we can reuse it for all subsequent requests. Also, we can never decrease the capacity but we may increase it later on by paying the extra cost.
 
-We now try to apply the framework to this problem. We first formulate the LP where for each edge we keep a variable $x_e$ indicating the capacity of the edge that we own. We note that a unit flow can be sent from $S_i$ to $T_i$ if and only if every $(S_i, T_i)$ cut with respect to $x_e$ has value at least 1. Therefore, the LP we get is: 
+We now try to apply the framework to this problem. We first formulate the LP where for each edge we keep a variable $x_e$ indicating the capacity of the edge that we own. We note that a unit flow can be sent from $S_i$ to $T_i$ if and only if every $(S_i, T_i)$ cut with respect to $x_e$ has value at least 1. Therefore, the primal LP we get is: 
 \[
-	\begin{array}{lr}
-	\textrm{Primal: minimize}   & \sum_{e \in E} c_e x_e   \\
-	\textrm{subject to:} & \\
-	\textrm{for each day $i$, every $(S_i,T_i)$ cut $C$} & \sum_{e \in C} x_e  \ge 1  \\
+\textrm{($P$) : min}  \sum_{e \in E} c_e x_e
+\]
+\[
+	\begin{array}{rr}
+	\textrm{subject to :} & \\
+		\textrm{$\forall$ day $i$, every $(S_i,T_i)$ cut $C$} \textrm{ :} & \sum_{e \in C} x_e  \ge 1  \\
 			    & x_e \geq 0
 	\end{array}
 \]
@@ -32,12 +34,12 @@ To get an online solution for the LP we use the framework developed in the previ
 
 As mentioned in the previous section, the algorithm is $O(\log d)$-competitive, where $d = \max_j\{|S_j|\}$. Here each $S_j$ corresponds to a cut in the graph so $O( \log d ) = O( \log \textrm{MAX-CUT} ) = O( \log n )$ where $n = |V|$, the number of nodes in the graph.
 
-The integral version of the connectivity problem where we are only allowed to buy the whole edge and not fractions of it is of particular interest since it captures many graph optimization problems. By randomly rounding the fractional capacity values in every edge we can obtain an integral solution. The facility location as we will see next is one example for this.
+The integral version of the connectivity problem where we are only allowed to buy the whole edge and not fractions is of particular interest since it captures many graph optimization problems. By randomly rounding the fractional capacity values in every edge we can obtain an integral solution. The facility location as we will see next is one example for this.
 
 \subsection{Facility Location}
 In the facility location problem, there is a set $F$ of $n$ possible facilities that we can build along with a certain building cost $c_f$ for every $f \in F$. In this problem clients arrive one at a time and want to be connected to at least one of the built facilities. Every client $i$ has a certain cost $c_{i,f}$ for every facility $f$ that he may be connected to. So the decision we have to make whenever a client appears is whether to connect him to some previously built facility or to build a new facility and connect him to it. Again, since this is an online setting we cannot undo the fact that a facility has been built or that a client has been connected to the facility.
 
-We now show how to reduce this problem to the integral connectivity problem. For every facility $f \in F$, we create a tree where the root corresponds to $f$. We connect the root to a single node with an edge of cost $c_f$. And then we connect this node to the leaves where each leaf corresponds to every client. The edges connecting the client nodes to the intermediate node have cost equal to $c_{i,f}$. Note that each tree has unbounded size since the number of clients may be arbitrarily large and that in the online setting we don't know the edge costs of a client before he appears. However we will never use a part of the tree that corresponds to some client that hasn't arrived yet.
+We now show how to reduce this problem to the integral connectivity problem. For every facility $f \in F$, we create a tree where the root corresponds to $f$. We connect the root to a single node with an edge of cost $c_f$. Then we connect this node to the leaves where each leaf corresponds to every client. The edges connecting the client nodes to the intermediate node have cost equal to $c_{i,f}$. Note that each tree has unbounded size since the number of clients may be arbitrarily large and that in the online setting we don't know the edge costs of a client before he appears. However we will never use a part of the tree that corresponds to some client that hasn't arrived yet.
 
 Every time a new client appears we need to connect a node that corresponds to him in some tree to the root of that tree by buying edges. If the edge connecting the root of the tree to the intermediate node has already been bought it means that the facility has been built and that we only need to pay for connecting the client to that facility (buy the edge to the intermediate node). Thus, in the context of the connectivity problem we can see that each client is associated with two sets $(S_i,T_i)$ where $S_i$ is the set of nodes corresponding to him in every tree and $T_i$ are the roots of all trees.
 
