@@ -15,11 +15,11 @@ If the last day of skiing is before day B then this strategy is optimal.
 On the other hand, if the last day of skiing is after day B, then the strategy is at most two times as expensive as the optimal strategy, OPT, which is to buy skis on the first day of skiing.
 This strategy achieves a competitive ratio of 2 (it is 2-competitive), and is optimal for deterministic strategies.
 
-However, a better competitive ratio of $\frac{e}{e-1}$ can be achieved using randomization.
+However, a better competitive ratio of $\frac{e}{e-1}$ can be achieved using randomization against an oblivious adversary.
 We will provide an optimal randomized algorithm using the primal-dual approach, but first we will discuss a deterministic primal-dual algorithm that achieves 2-competitiveness.
 
 \subsubsection{LP Formulation}
-We begin by formulating an integer linear program that captures the solution for the offline ski rental problem.
+We begin by formulating an integer linear program that captures the solution to the offline ski rental problem.
 We use an indicator variable $x \in \{0,1\}$ that represents whether we buy the skis and a variable $d_i \in \{0,1\}$ for every day that indicates whether we rent skis at day $i$. 
 The objective we want to minimize then is:
 \[ B\cdot x + \sum^n_{i=1} d_i \]
@@ -37,12 +37,12 @@ This means that we can never decrease any variables set in the past.
 
 \subsubsection{Deterministic Algorithm}
 
-We will now describe how we can incrementally solve the linear program using the primal-dual approach.
-We will later argue that this will not cause the solution to deviate too much from OPT.
-In order to apply the primal-dual approach, we first have to relax the integer linear program to a linear program. Note that the optimal solution in the relaxed version is exactly the same as before.
+We now describe how we can incrementally solve the linear program using the primal-dual approach.
+Later we argue that this does not cause the solution to deviate too much from OPT.
+In order to apply the primal-dual approach, we first relax the integer linear program to a linear program. Note that the optimal solution in the relaxed version is exactly the same as before (the integrality gap is $0$).
 
 The primal-dual method approximates the solution to the linear program incrementally by updating the primal and dual simultaneously.
-The primal and dual is given below.
+The primal and dual are given below.
 \[
 \textrm{($P$) : min} \textrm{ } B\cdot x + \sum^n_{i=1} d_i
 \]
@@ -68,17 +68,17 @@ The primal and dual is given below.
 \]
 
 
-For the online version, in the $i$-th day a new constraint ($x + d_i  \ge 1$) arrives in the primal problem (updating the objective as necessary) and a new variable ($y_i$) arrives in the dual.
+For the online version, on the $i$-th day a new constraint ($x + d_i  \ge 1$) arrives in the primal problem (updating the objective as necessary) and a new variable ($y_i$) arrives in the dual.
 With the new constraint the primal problem may become infeasible (this happens if $x < 1$), so we need to apply an update rule to decide which variable to increase.
-If it is still feasible we do not have to do anything since we already covered the new constraint. 
+If it is still feasible we do not have to do anything since we have already covered the new constraint. 
 Otherwise, we need to decide which variable, $x$ or $d_i$, to increase. 
-To make this decision we look at the dual. 
+We look at the dual to make this decision. 
 Since the dual is a maximization problem, we would like to increase the new variable $y_i$ as much as possible.
 Thus we increase $y_i$ until we hit a constraint in the dual problem.
 This constraint corresponds to a variable in the primal problem, either $d_i$ or $x$.
 We set this variable equal to 1.
 
-Notice that the algorithm corresponds to exactly the same strategy we described previously, i.e. the skier rents skis for the first B days and then buys them.
+Notice that the algorithm corresponds to exactly the same strategy we described previously, i.e.\ the skier rents skis for the first B days and then buys them.
 
 %\subsubsection{Analysis}
 
@@ -98,20 +98,20 @@ By the update rule we have that:
 So by approximate complementary slackness with $\alpha = 1$ and $\beta = 2$ we get that the primal objective is at most 2 times the dual objective. Therefore, it is at most 2 times the optimal offline solution and thus it is 2-competitive.
 
 Note how we use the dual constraints to decide which primal variables to update.
-The idea is to update the variables so that we maintain the complementary slackness conditions, which then allows us to bound the competitive ratio.
+The idea is to update the variables so that we maintain the complementary slackness condition, which then allows us to bound the competitive ratio.
 
 \subsubsection{Randomized Algorithm}
-We now move on to get a randomized algorithm for the ski rental problem. 
-We first try to find a fractional online solution and then use the fractional values of the primal variables to get the probabilities of buying and renting the skis for each day.
-In the deterministic case we always maintained a feasible primal solution and whenever a new constraint appeared on day $i$ we either set $d_i$ or $x$ to 1. For the fractional case we do not have to set $x$ directly to 1 when we reach $B$ days but we can gradually increase $x$ every day. So for every new day $i$ if $x<1$ we use the update rule:
+We now derive a randomized algorithm for the ski rental problem. 
+We first find a fractional online solution and then use the fractional values of the primal variables to obtain the probabilities of buying and renting the skis for each day.
+In the deterministic case we always maintained a feasible primal solution and whenever a new constraint appeared on day $i$ we either set $d_i$ or $x$ to 1. For the fractional case we do not have to set $x$ directly to 1 when we reach $B$ days, but instead we can gradually increase $x$ every day. So for every new day $i$, if $x<1$ we use the update rule:
 \begin{itemize}
 \item $x \leftarrow x(1+1/B) + 1/(c\cdot B)$
 \item $d_i \leftarrow 1 - x$
 \item $y_i \leftarrow 1$
 \end{itemize}
-where $c$ is a constant to be defined later.
+where $c$ is a constant to be determined later.
 
-We move on to the analysis part of the algorithm. Let $x^{(i)}$ be the value of $x$ on the $i$-th day. We first note that under the update rule chosen, after $k$ days $x^{(k)} =  \sum_{i=0}^{k-1} (1+1/B)^i / (c\cdot B) = [(1+1/B)^k-1]/c$. It is obvious that the primal solution is always feasible since at any time $i$, $x^{(i)}+d_i=1$ and no previous constraints are violated by the increase in $x$. We choose $c$ so that the dual is feasible as well. We want $y_i$ to be 1 for at most $B$ days otherwise the dual constraint  $\sum^n_{i=1} y_i \le B$ will be violated. So we want that after $B$ days $x = 1$ which means that $c = (1+1/B)^k-1$.
+We move on to the analysis part of the algorithm. Let $x^{(i)}$ be the value of $x$ on the $i$-th day. We first note that under the update rule chosen, after $k$ days $x^{(k)} =  \sum_{i=0}^{k-1} (1+1/B)^i / (c\cdot B) = [(1+1/B)^k-1]/c$. It is obvious that the primal solution is always feasible since at any time $i$, $x^{(i)}+d_i=1$ and no previous constraints are violated by the increase in $x$. We choose $c$ so that the dual is also feasible. We want $y_i$ to be 1 for at most $B$ days otherwise the dual constraint  $\sum^n_{i=1} y_i \le B$ will be violated. So we require that after $B$ days $x = 1$, which means that $c = (1+1/B)^k-1$.
 
 Moreover, we want the ratio between the primal objective and the dual objective to be bounded by a constant.
 We use a proof by induction to show that it is bounded by $(1+1/c)$.
@@ -123,11 +123,11 @@ So the primal objective increases by $x^{(k)} + 1/c + 1 - x^{(k+1)} \le 1 + 1/c$
 On the other hand the dual objective increases by 1 unit so the statement holds.
 
 Therefore we get an online fractional algorithm for the ski rental problem with competitive ratio $1+1/c \approx e/(e-1)$ for large values of $B$.
-Following we see how to make this randomized based on the fractional values we get.
+We now convert this into a randomized algorithm, interpreting the fractional values as probabilities.
 
 %\subsubsection{Randomized Ski Rental}
-Our randomized strategy for deciding is as follows: In the beginning we pick a random value $v$ in the interval $[0,1]$ and we buy skis on the first day that $x \ge v$.
-The probability of buying skis in the first $i$ days is exactly $x^{(i)}$, i.e. the assigned fractional value by the online fractional solution. The probability of renting skis in the $i$-th day is exactly $1-x^{(i)}$.
+Our randomized decision strategy is as follows: At the beginning we pick a random value $v$ in the interval $[0,1]$ and we buy skis on the first day $i$ such that $x^{(i)} \ge v$.
+The probability of buying skis in the first $i$ days is exactly $x^{(i)}$, i.e.\ the online fractional solution. The probability of renting skis on the $i$-th day is exactly $1-x^{(i)}$.
 If we go skiing for $n$ days the expected cost of our randomized algorithm is therefore $B \cdot  x^{(n)} + \sum_{i=1}^n(1-x^{(i)})$ which is exactly the same as the objective of the fractional algorithm.
 Thus the randomized algorithm is also $e/(e-1)$-competitive.
 
@@ -164,19 +164,20 @@ The dual of a covering LP is called a \emph{packing LP} and has the following fo
 	\end{array}
 \]
 
-For instance, the matching problem is the packing dual of the vertex covering primal, and the independent set is the packing dual of the edge cover covering primal.
+For instance, the matching problem is the packing dual of the vertex covering primal, and independent set is the packing dual of the edge cover primal.
 
 As the reader might see this duality nicely captures ski rental.
-The ski rental primal is a covering problem where we must cover all days with rented or bought skis, and the corresponding dual is a packing problem, where we pack the cost of renting skis int the cost $B$ of buying skis.
+The ski rental primal is a covering problem where we must cover all days with rented or bought skis. 
+The corresponding dual is a packing problem where we pack the cost of renting skis into the cost of buying skis.
 
-In the online version a constraint appears every time in the primal LP and a new variable arrives in the dual. We are only allowed to increase the variables at every time step.
+In the online version, a new constraint appears at every time step in the primal LP and a new variable arrives in the dual. We are only allowed to increase the variables at every time step.
 
 Algorithm \ref{generalalg} provides an online fractional solution for such problems. Using a similar analysis as in the ski-rental problem we can prove that the algorithm is $O(\log d)$-competitive, where \mbox{$d = \max_j\{|S_j|\}$}~\cite{buchbinder09:survey}.
 Note that this algorithm does not depend on the dual variables as in the randomized ski rental version. The dual variables are only used in order to bound its competitiveness by comparing the primal and the dual objectives.
-Using this general algorithm we can develop online algorithms for many different optimization problems as we will see in later sections. This algorithm gives us out of the box an efficient online fractional solution as compared to the optimal. It is our responsibility however to use the fractional values that we get to design our response.
+Using this general algorithm we can develop online algorithms for many different optimization problems as we will see in later sections. This algorithm gives us a competitive online fractional solution. However, it is our responsibility to use the fractional values to design our response.
 
 \begin{algorithm}
-\caption{Whenever a new constraint in the primal and a variable in the dual appear}
+\caption{Update rule for the primal and dual variables. The update rule is applied when new primal constraints appear.}
 \label{generalalg}
 \begin{algorithmic}[1]
 \WHILE{ $\sum_{i \in S(j)} x_i  < 1$}
@@ -188,4 +189,4 @@ Using this general algorithm we can develop online algorithms for many different
 \end{algorithmic}
 \end{algorithm}
 
-
+Other primal-dual algorithms use different update rules to obtain similar competitive ratios~\cite{buchbinder09:survey}.

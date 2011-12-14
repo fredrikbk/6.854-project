@@ -9,7 +9,7 @@ Using the basic approach described in section \ref{section:general_approach}, it
 This condition restricts the set of problems we can model and makes some LP formulations more complex.
 The main technical contribution of~\cite{bansal10:k-server} is to overcome these limitations.
 
-We illustrate the the extended primal-dual framework with the weighted caching problem.
+We illustrate the extended primal-dual framework with the weighted caching problem.
 In this problem, we have a cache of size $k$ and a total of $n$ pages, each with a weight $w_i$.
 At each time step $t$, we receive a request for a page $p_t$.
 If $p_t$ is not in the cache, we have to evict one page from the cache and replace it with $p_t$.
@@ -81,14 +81,14 @@ The goal is to minimizhee the total distance travelled by all servers.
 
 It is conjectured that there is a deterministic $k$-competitive algorithm for the $k$-server problem.
 While the best algorithm for the general case is $2k -1$ competitive, there are $k$-competitive algorithms for some special metrics like trees.
-For the randomized case, the conjectured competitive ratio is $O(\log k)$ and there has been recent work showing a $\tilde{O}(log^3 n \; log^2 k)$ approximation ratio~\cite{bansal11:randomized-k-server}.
-While the results in \cite{bansal11:randomized-k-server} do not use the primal-dual approach for online algorithms, some of the techniques are inspired by problems that were first introduced in the context of the primal dual approach.
+For the randomized case, the conjectured competitive ratio is $O(\log k)$ and there has been recent work showing an $\tilde{O}(log^3 n \; log^2 k)$ approximation ratio~\cite{bansal11:randomized-k-server}.
+While the results in \cite{bansal11:randomized-k-server} do not use the primal-dual approach for online algorithms, some of the techniques are inspired by problems that were first introduced in the context of the primal-dual approach.
 
 One key difficulty of the $k$-server problem on general metric spaces is the weak structure of the distances between points.
-The most promising approach for overcoming this obstacle is work on embedding general metrics into hierarchically separated trees (HSTs).
-The distortion resulting from this embedding would be still be sufficient to provide a polylogarithmic competitive ratio for the randomized $k$-server problem.
+The most promising approach for overcoming this obstacle is to embed general metrics into hierarchically separated trees (HSTs).
+The distortion resulting from this embedding would still be sufficient to provide a polylogarithmic competitive ratio for the randomized $k$-server problem.
 Moreover, HSTs allow the $k$-server problem to be split recursively into subproblems at each node.
-The advantage of this approach is that it leads to simpler subproblems because all children of a node in an HST have the same distance (a \emph{uniform} metric space).
+The advantage of this approach is that it leads to simpler subproblems since all children of a node in an HST have the same distance (a \emph{uniform} metric space).
 
 In~\cite{bansal10:k-server}, the authors solve a restricted version of this subproblem called the \emph{Allocation-C problem}.
 It is defined as follows:
@@ -98,11 +98,11 @@ Each request is described by a cost vector $h^t = (h^t(0), \ldots, h^t(k))$ wher
 The cost vectors satisfy two properties:
 \begin{itemize}
 \item The costs are monotonic, i.e.\ $h^t(j) \geq h^t(j + 1)$.
-Using more servers for a requests cannot increase the cost of serving it.
+Using more servers for a request cannot increase the cost of serving it.
 \item The cost vector is convex.
 This means that we have $h^t(j+1) - h^t(j +2) \leq h^t(j) - h^t(j + 1)$.
 So the marginal improvement achieved by adding a new server to the request decreases with the number of servers already at the request.
-\end{itemize}.
+\end{itemize}
 When a request comes in, we can move an arbitrary number of available servers to the request before serving it.
 The total cost incurred by the algorithm is divided into two parts:
 \begin{itemize}
