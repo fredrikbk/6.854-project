@@ -2,17 +2,17 @@ In this section we demonstrate the applicability of the primal-dual method to re
 We survey a systems paper, which is primarily of interest because of its applicability to system design, and not necessarily because of its theoretical value.
 
 Linear programs capture many important real world problems. 
-Since the primal-dual method gives us a tool to design online algorithms for many problems that can be expressed as linear programs, we can expect it to be useful for many real-world applications.
-We give one example here by discussing its applicability to a data center job-migration problem.
+Since the primal-dual method gives us a tool to design online algorithms for many problems that can be expressed as linear programs, we expect it to be useful for many real-world applications.
+Here we give one example by discussing its applicability to a data center job-migration problem.
 
 The goal is to move jobs to data centers at locations with temporarily cheaper power.
 This is highly topical as energy over the last ten years has come to dominate data center operation costs.
 Buchbinder, Jain and Menache developed an online algorithm based on the primal-dual method that takes both energy costs and bandwidth costs into account~\cite{buchbinder11:job-migration,buchbinder11:job-migration-techreport}.
 The algorithm is $O(\log H_0)$-competitive, where $H_0$ is the total number of servers in all data center.
 
-The algorithm using the primal-dual method turned out to be too computationally expensive to be used in practice.
+The algorithm using the primal-dual method turned out to be too computationally expensive for practical use.
 However, the authors used it as inspiration in the design of an efficient non-intuitive algorithm.
-The authors can not prove a worst case bound on this algorithm, but they show empirically that it outperforms two reasonable greedy heuristics on real-world data.
+The authors cannot prove a worst-case bound for this algorithm, but they show empirically that it outperforms two reasonable greedy heuristics on real-world data.
 In fact, it performs to within $4\%-6\%$ of the optimum on this data.
 
 \subsection{Problem Formulation}
@@ -20,15 +20,15 @@ In fact, it performs to within $4\%-6\%$ of the optimum on this data.
 Many data center operators have many data centers that are geographically distributed.
 Since electricity prices typically vary between geographical locations, migrating tasks to data centers with cheaper electricity has recently been proposed.
 Furthermore, energy prices fluctuate and the cheapest data center at one point in time may not be the cheapest later on.
-This motivates online algorithms that monitor electricity prices and at any time move tasks to data centers where the electricity is the cheapest.
-However, moving data is not free and typically incur a cost proportional to the size of the moved data.
-These competing constraints make the problem non-trivial, and greedy heuristics with provable performance are not feasible.
+This motivates online algorithms that monitor electricity prices and at any time move tasks to data centers with the cheapest electricity.
+However, moving data is not free and typically incurs a cost proportional to the size of the moved data.
+These competing constraints make the problem non-trivial and greedy heuristics with provable performance are not feasible.
 
 % Describe the model and the variables
 Specifically, the domain consists of $n$ data centers, where each data center $i$ contains $H_i$ servers.
 $H_0$ denotes the total number of servers in all data centers.
-At any time there are $B$ jobs in the system and each job must be assigned to some server\footnote{The technical report generalizes to variable workloads $B_{t}$}.
-At each time step $t$ the energy cost of data centers change and we must decide whether to move jobs. 
+At any time there are $B$ jobs in the system and each job must be assigned to some server\footnote{The technical report generalizes to variable workloads $B_{t}$.}.
+At each time step $t$ the energy costs of data centers change and we must decide whether to move jobs. 
 It costs $d_i$ to move data out of data center $i$, and the variable $z_{i,j,t}$ denotes the fractional number of jobs migrated from server~$j$ in data center $i$ at time $t$.
 Finally, $c_{i,j,t}$ is the energy cost of operating server $j$ in data center $i$ at time $t$, and $y_{i,j,t}$ is the fraction of server $j$ of data center $i$ that is utilized at time $t$.
 Jobs are defined as using exactly one server, so the number of servers needed at data center $i$ at time $t$ is $\lceil \sum^{H_i}_{j=1}y_{i,j,t} \rceil$.
@@ -52,7 +52,7 @@ The following (primal) linear program captures the \emph{offline} data center jo
 
 The objective function minimizes the sum of the bandwidth cost (first term) and the energy cost (second term).
 The first constraint ensures the allocation can service the workload $B$.
-The second constraint enforces that the amount of work leaving a server is at least as much as the work that server lost (it may be more as a server may also receive work).
+The second constraint enforces that the amount of work leaving a server is at least as much as the work that the server lost (it may be more as a server may also receive work).
 The third constraint prevents servers from being over-subscribed, since each server can only execute one task. 
 The fourth and fifth constraints prevent server and bandwidth usage from being negative.
 
@@ -76,11 +76,11 @@ The corresponding dual linear program is:
 
 Given these  linear programs we can devise an online algorithm based on the primal-dual method.
 That is, we simultaneously update the primal ($P$) and dual ($D$) in such a way that we maintain feasible solutions.
-We can then upper bound the operation cost of the dual, which by weak duality becomes the lower bound of the primal, and hence a bound on the competitive ratio of the algorithm.
+We can then derive an upper bound for the operation cost of the dual, which by weak duality becomes the lower bound of the primal, and hence a bound on the competitive ratio of the algorithm.
 
 Algorithm~\ref{job-migration-alg} shows the update rule for the dual variables.
 The update rule is applied for each server $(i,j)$, and the cost vector $c_{t}$ is supplied as input.
-The cost vector $c_t$ is defined to be an \emph{elementary} cost vector. That is, every entry is $0$ except for the cost of server $i,j$ at that execution of the update rule.
+The cost vector $c_t$ is defined to be an \emph{elementary} cost vector. That is, every entry is $0$ except for the cost of server $i,j$ at that invocation of the update rule.
 Note that a more precise name would be $c_{i_t,j_t}$, but $c_t$ is used instead for notational convenience.
 Note also that the reduction to elementary cost vectors does not affect the solution.
 
@@ -107,7 +107,7 @@ Note also that the reduction to elementary cost vectors does not affect the solu
 
 The objective of the dual algorithm is to maximize the dual profit, and it is therefore beneficial to increase $a_t$ as much as possible, without violating constraints.
 However, the update rule is expressed in terms of continuous updates to $a_t$.
-In practice the algorithm would be implemented in terms of discrete time iterations.
+In practice, the algorithm would be implemented in terms of discrete time iterations.
 It is possible to achieve this by searching for a scalar value of $a_t$ up to the required precision level.
 
 Finally, as stated earlier, the primal variable, $y_{i,j,t}$ is updated together with the corresponding dual variable $b_{i_t,j_t,t+1}$.
@@ -123,7 +123,7 @@ The primal is tied to the dual by (weak) duality, and we can therefore update th
  The online algorithm is $O(\log(H_0))$-competitive.
 \end{theorem}
 
-We do not provide a proof here, but it is based on lower bounding the value of the primal minimization problem by the value of the dual maximization problem. This takes advantage of the fact that the primal and dual are linked through the primal update rule.
+We do not provide a proof here, but it is based on deriving a lower bound for the value of the primal minimization problem using the value of the dual maximization problem. This takes advantage of the fact that the primal and dual are linked through the primal update rule.
 A detailed proof is given in~\cite{buchbinder11:job-migration}.
 
 \subsection{Efficient Online Algorithm}
@@ -134,7 +134,7 @@ Because of this the designers of the primal-dual algorithm also designed a pract
 This algorithm is based on the primal-dual algorithm and uses the same ideas, but looses the provable competitive ratio in exchange for efficiency.
 To evaluate the algorithm the authors performed empirical experiments comparing the algorithm with reasonable, and much more intuitive, heuristics on real electricity price data.
 
-The iterations of the efficient algorithm is as follows. For each iteration the update rule specifies how much work to move from data center $i$ to data center $k$. A detailed description can be found in~\cite{buchbinder11:job-migration-techreport}.
+The algorithm works as follows. For each iteration the update rule specifies how much work to move from data center $i$ to data center $k$. A detailed description can be found in~\cite{buchbinder11:job-migration-techreport}.
 
 \begin{algorithm}
 \caption{Efficient job migration algorithm}
@@ -157,11 +157,11 @@ The iterations of the efficient algorithm is as follows. For each iteration the 
 To evaluate the algorithm the authors compared it to the following heuristics:
 \begin{description}
  \item[Move to Cheap] At each time step, move all tasks to the servers with the least expensive electricity. This fully optimizes power usage, but does not optimize for bandwidth at all.
- \item[MimicOPT] At each time step, attempt to mimic OPT by solving an LP with the electricity costs up to the current time $t$ (in practice a window). Note that this algorithm, as opposed to the primal-dual inspired algorithm, makes no attempt to take future costs into account.
+ \item[MimicOPT] At each time step, attempt to mimic OPT by solving an LP with the electricity costs up to the current time $t$ (in practice a time window). Note that this algorithm, as opposed to the primal-dual inspired algorithm, makes no attempt to take future costs into account.
 \end{description}
 
-They ran a simulated experiments comparing the efficient primal-dual inspired online algorithm, move to cheap and mimicOPT to OPT.
+They ran a simulated experiments comparing the efficient primal-dual inspired online algorithm, Move to Cheap and MimicOPT to OPT.
 The experiments were performed on publicly available electricity pricing information from 30 US locations covering January 2006 through March 2009.
-The results show that the efficient primal-dual inspired algorithm  performs to within $5.7\%$ of OPT, while move to cheap and mimicOPT only performs to within $68.5\%$ and $10.4\%$ of OPT respectively.
+The results show that the efficient primal-dual inspired algorithm  performs to within $5.7\%$ of OPT, while Move to Cheap and MimicOPT only performs to within $68.5\%$ and $10.4\%$ of OPT respectively.
 This clearly motivates using an algorithm that takes ideas from the algorithm developed using the primal-dual method for complex problems. 
 Even though the provable competitive ratio is lost, such algorithms may perform better than intuitive heuristics since they more systematically take complex constraints into account.
